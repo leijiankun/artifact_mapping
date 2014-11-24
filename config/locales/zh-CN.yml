@@ -1,0 +1,272 @@
+zh-CN:
+  appointment_time_period:
+    morning: 8:00~12:00
+    afternoon: 12:00~17:00
+    night: 17:00~20:00
+  order_status:
+    created: 新订单
+    read: 已阅读
+    completed: 已完成
+  payment_method:
+    cash: 现金到付 
+    online_payment: 在线支付
+  payment_status:
+    unpaid: 未付款
+    paid: 已付款 
+  card_type:
+    count_card: 按次数
+    time_period_card: 按时间
+  activity_scope:
+    draft: 草稿
+    published: 已发布
+    unpublished: 未发布
+  article_status:
+    draft: 草稿
+    published: 已发布
+    unpublished: 未发布
+  order_type:
+    car_care: 汽车保养
+    car_repair: 汽车维修
+    wash_card: 洗车卡
+  redeem_type:
+    use_points: 积分兑换
+    add_points: 增加积分
+  card_valid_time:
+    half_year: 半年
+    one_year: 一年
+    two_year: 二年
+    three_year: 三年
+  activerecord:
+    models:
+      user: 用户
+      staff: 管理员
+      product: 商品
+      product_type: 商品类型
+      order: 订单
+      order_item: 订单项
+      shop: 商铺
+      shop_staff: 商铺员工账号
+      car_brand: 品牌
+      car_model: 车型
+      car_model_item: 款式
+      address: 地址
+      car: 汽车
+      wash_card: 洗车卡
+      activity: 活动
+      article: 文章
+      article_type: 文章分类
+      insurance_type: 保险类型
+    attributes:
+      user:
+        email: 邮箱
+        encrypted_password: 密码
+        password: 密码
+        remember_me: 记住我
+        password_confirmation: 确认密码
+        name: 名字
+        created_at: 注册时间
+        updated_at: 更新时间
+        current_sign_in_ip: 当前登录IP
+        sign_in_count: 登录次数
+        phone: 手机号
+        phone_valid_at: 手机号验证时间
+        weixin_openid: 微信Openid
+        points: 积分
+      staff:
+        email: 邮箱
+        encrypted_password: 密码
+        name: 用户名
+        created_at: 注册时间
+        updated_at: 更新时间
+        password: 密码
+        remember_me: 记住我
+        password_confirmation: 确认密码
+      car_brand:
+        name: 名称
+      car_model: 
+        name: 名称
+      car_model_item: 
+        name: 名称
+      product:
+        name: 名称
+        price: 价格
+        description: 描述
+      product_type:
+        name: 名称
+      address:
+        name: 姓名
+        detail_address: 详细地址
+        phone: 手机号
+      car:
+        car_number: 车牌号
+        car_number_city: 车牌所在城市
+        register_time: 车牌注册时间
+        vin_code: VIN 
+        engine_number: 发动机号码
+      order:
+        memo: 备注
+        appointment_date: 预约日期
+        appointment_time_period: 预约时间
+      shop:
+        name: 店名
+        address: 地址
+        phone: 联系电话
+        weixin_app_id: 微信 app_id
+        weixin_app_key: 微信 app_key
+        weixin_token: 微信 token 
+        weixin_secret_key: 微信 secret_key
+      wash_card:
+        user: 客户
+        user_id: 客户
+        card_type: 类型
+        remain_count: 剩余洗车次数
+        start_time: 有效洗车开始时间 
+        end_time: 有效洗车结束时间
+        name: 名称
+        number: 序列号
+      activity:
+        status: 状态
+        title: 标题
+        content: 内容
+        start_time: 开始时间
+        end_time: 结束时间
+      comment:
+        star: 评分
+        content: 内容
+      wash_card_type:
+        name: 名称
+        card_type: 类型
+        valid_time: 有效时间 
+        valid_count: 有效次数
+        description: 描述
+        price: 价格
+      article:
+        title: 标题
+        content: 内容
+        status: 状态
+        article_type: 类型
+        article_type_id: 类型
+        permalink: 链接 
+
+      article_type:
+        name: 名称
+      insurance_type:
+        name: 名称
+        description: 描述
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              taken: 该邮箱已被注册了
+              blank: 请输入注册邮箱
+            name:
+              taken: 该用户名已被注册
+              blank: 请输入姓名
+              too_short: 用户名长度应该在3到20之间
+              too_long: 用户名长度应该在3到20之间
+            domain:
+              taken: 该个性域名已被占了
+              too_short: 个性域名长度应该在3到20之间
+              too_long: 个性域名长度应该在3到30之间
+            password:
+              taken: 请输入密码
+              blank: 密码不能为空
+              too_short: 密码太短
+              too_long: 密码太长了
+            password_confirmation:
+              taken: 请输入确认密码
+              blank: 确认密码不能为空
+              confirmation: 密码不一致
+            reset_password_token:
+              invalid: 重设密码的链接已经使用过了 
+            current_password:
+              invalid: 当前密码错误
+              blank: 请输入当前密码
+            phone:
+              blank: 请输入手机号码
+              taken: 此手机号码已经被注册了，请换一个吧
+        product:
+          attributes:
+            name:
+              blank: 请输入商品名称
+            price: 
+              blank: 请输入商品价格
+        shop:
+          attributes:
+            name:
+              blank: 请输入店铺名称
+            address: 
+              blank: 请输入地址
+            phone:
+              blank: 请输入联系电话
+        order:
+          attributes:
+            appointment_date:
+              blank: 请输入预约日期
+            appointment_time_period:
+              blank: 请输入预约时间
+        address:
+          attributes:
+            name: 
+              blank: 请输入姓名
+            detail_address: 
+              blank: 请输入详细地址
+            phone:
+              blank: 请输入手机号
+
+  views:
+    pagination:
+      first: "&laquo;"
+      last: "&raquo;"
+      previous: "&lsaquo;"
+      next: "&rsaquo;"
+      truncate: "..."
+
+  datetime:
+    distance_in_words:
+      half_a_minute: "半分钟"
+      less_than_x_seconds:
+        one:   "1秒"
+        other: "%{count}秒"
+      x_seconds:
+        one:   "1秒"
+        other: "%{count}秒"
+      less_than_x_minutes:
+        one:   "1分钟"
+        other: "%{count}分钟"
+      x_minutes:
+        one:   "1分钟"
+        other: "%{count}分钟"
+      about_x_hours:
+        one:   "约1小时"
+        other: "%{count}小时"
+      x_days:
+        one:   "1天"
+        other: "%{count}天"
+      about_x_months:
+        one:   "约1个月"
+        other: "%{count}个月"
+      x_months:
+        one:   "一个月"
+        other: "%{count}个月"
+      about_x_years:
+        one:   "约1年"
+        other: "%{count}年"
+      over_x_years:
+        one:   "超过1年"
+        other: "超过%{count}年"
+      almost_x_years:
+        one:   "差不多1年"
+        other: "差不多%{count}年"
+
+  date:
+    formats:
+      default:  "%Y-%m-%d"
+    day_names:      [星期天, 星期一, 星期二, 星期三, 星期四, 星期五, 星期六]
+    abbr_day_names: [周日, 周一, 周二, 周三, 周四, 周五, 周六]
+    month_names:    [~, 1月, 2月, 3月, 4月, 5月, 6月, 7月, 8月, 9月, 10月, 11月, 12月]
+    order:
+      - :day
+      - :month
+      - :year
