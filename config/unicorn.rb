@@ -21,7 +21,7 @@ app_root = File.expand_path("../..", __FILE__)
 working_directory app_root
 
 listen "/tmp/unicorn.artifact_mapping.sock", backlog: 64
-listen 5000, tcp_nopush: false
+listen 5001, tcp_nopush: false
 
 # nuke workers after 30 seconds instead of 60 seconds (the default)
 timeout 30
