@@ -17,3 +17,60 @@
  
 @import "bootstrap/theme";
 @import "bootstrap";
+
+@media(min-width: 1200px){
+  .container{
+    max-width: 1400px;
+    width: auto;
+  }
+}
+
+.node {
+  cursor: pointer;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node circle.artifact {
+  fill: #fff;
+  stroke: lightsteelblue;
+  stroke-width: 2px;
+}
+.node circle.one2many {
+  fill: #fff;
+  stroke: lightsteelblue;
+  stroke-width: 2px;
+  opacity: 0.5;
+
+}
+
+.node circle.unique{
+  fill: #fff;
+  stroke: #ffa500;
+  stroke-width: 1px;
+}
+
+.node text {
+  font: 12px sans-serif;
+}
+
+.node text.unique {
+  font-weight: bold;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+
+
+.table-model-list{
+  .panel-heading>h3{
+    cursor: pointer;
+  }
+}

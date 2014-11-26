@@ -1,4 +1,4 @@
-worker_processes 4
+worker_processes 2
 
 ##############################################################
 # Rainbows!设置开始
@@ -20,7 +20,7 @@ end
 app_root = File.expand_path("../..", __FILE__)
 working_directory app_root
 
-listen "/tmp/unicorn.dvoy.sock", backlog: 64
+listen "/tmp/unicorn.artifact_mapping.sock", backlog: 64
 listen 5000, tcp_nopush: false
 
 # nuke workers after 30 seconds instead of 60 seconds (the default)

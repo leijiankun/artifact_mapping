@@ -1,8 +1,617 @@
 .row
-  .col-sm-6
+  .col-sm-7
     h2 Artifact模型
     hr
+    <!-- Single button -->
+    <div class="btn-group pull-right" style="position:absolute;top:100px;right:20px;">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        |操作 
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="#">连接（=）</a></li>
+        <li><a href="#">字符串操作</a></li>
+        <li><a href="#">类型转换操作</a></li>
+      </ul>
+    </div>
+    / iframe src="http://www.fudanglp.com/20141125/hz.html" style="border:0;width:680px;height:900px;overflow:hidden;"
+    .tree-map#tree-map
   .col-sm-1
   .col-sm-5
     h2 数据库模型
     hr
+    .table-model-list
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title 公租房申请审批表         
+        .panel-body 
+          table.table.table-hover.table-bordered
+            tbody
+              tr
+                td.key ID
+              tr
+                td CODE
+              tr
+                td 业务实例ID
+              tr
+                td 廉租房申请、变更、年审
+              tr
+                td 审批年度
+              tr
+                td ...
+
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title 申请人信息         
+        .panel-body 
+          table.table.table-hover.table-bordered
+            tbody
+              tr
+                td.key 申请人ID
+              tr
+                td 申请人CODE
+              tr
+                td 申请人姓名
+              tr
+                td 申请人身份证号
+              tr 
+                td 申请人年龄
+              tr
+                td 申请人工作单位编号
+              tr
+                td 申请人工作单位名称
+              tr
+                td ...
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title 申请人配偶信息  
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title 申请人家庭信息   
+      .panel.panel-default
+        .panel-heading
+          h3.panel-title 其他信息  
+
+= javascript_include_tag "http://www.fudanglp.com/20141125/js/d3.min.js"
+
+javascript:
+  $(function(){
+    $('.table-model-list .panel-heading>h3').bind('click',function(){
+      $(this).parent().parent().find(".panel-body").slideToggle(400);
+    });
+  });
+  
+
+  var treeData = [
+    {
+      "name": "公租房审批申请",
+      "parent": "null",
+    "artifact" : true,
+      "children": [
+      {
+        "name": "ID",
+        "unique" : true
+      },
+      {
+        "name": "CODE"
+      },
+      {
+        "name":"业务实例ID"
+      },
+      {
+        "name":"廉租房申请、变更、年审"
+      },
+      {
+        "name":"审批年度"
+      },
+      {
+        "name":"申请人信息",
+        "artifact" : true,
+        "children": [
+        {
+          "name":"申请人ID",
+          "unique" : true
+        },
+        {
+          "name":"申请人CODE"
+        },
+        {
+          "name":"申请人姓名"
+        },
+        {
+          "name":"申请人身份证号"
+        },
+        {
+          "name":"申请人年龄"
+        },
+        {
+          "name":"申请人工作单位编号"
+        },
+        {
+          "name":"申请人工作单位名称"
+        }]
+      },
+      {
+        "name":"申请人配偶信息",
+        "artifact" : true,
+        "children": [
+        {
+          "name":"配偶ID",
+          "unique" : true
+        },
+        {
+          "name":"配偶CODE"
+        },
+        {
+          "name":"配偶姓名"
+        },
+        {
+          "name":"配偶身份证号"
+        },
+        {
+          "name":"配偶年龄"
+        },
+        {
+          "name":"配偶工作单位编号"
+        },
+        {
+          "name":"配偶工作单位名称"
+        }]
+      },
+      {
+        "name":"申请人家庭信息",
+        "artifact" : true,
+        "children": [
+        {
+          "name":"家庭ID",
+          "unique" : true
+        },
+        {
+          "name":"家庭CODE"
+        },
+        {
+          "name":"家庭人数"
+        },
+        {
+          "name":"家庭年总收入"
+        },
+        {
+          "name":"家庭人均年收入"
+        },
+        {
+          "name":"户口入杭年数"
+        },
+        {
+          "name":"家庭住房情况ID"
+        },
+        {
+          "name":"已有住房面积"
+        },
+        {
+          "name":"享受实物分房面积"
+        },
+        {
+          "name":"困难证件类别"
+        },
+        {
+          "name":"困难证件号码"
+        },
+        {
+          "name":"困难证件有效期起"
+        },
+        {
+          "name":"困难证件有效期至"
+        }]
+      },
+      {
+        "name":"其他信息",
+        "artifact" : true,
+        "one2many" : true,
+        "_children": [
+        {
+          "name":"杭社保号"
+        },
+        {
+          "name":"普通、残疾、烈属"
+        },
+        {
+          "name":"配租资格证号"
+        },
+        {
+          "name":"配租方式"
+        },
+        {
+          "name":"拟配租人数"
+        },
+        {
+          "name":"补贴面积"
+        },
+        {
+          "name":"配租面积标准"
+        },
+        {
+          "name":"有效期起"
+        },
+        {
+          "name":"有效期至"
+        },
+        {
+          "name":"市局公示状态：0：默认值；1：待公示；2：公示中；3：完成公示"
+        },
+        {
+          "name":"配租次数"
+        },
+        {
+          "name":"不接受配租方案次数"
+        },
+        {
+          "name":"是否放弃资格"
+        },
+        {
+          "name":"是否取消实物配租资格"
+        },
+        {
+          "name":"是否过渡期"
+        },
+        {
+          "name":"过渡期起"
+        },
+        {
+          "name":"过渡期至"
+        },
+        {
+          "name":"备注"
+        },
+        {
+          "name":"是否有效"
+        },
+        {
+          "name":"变更前审批表ID"
+        },
+        {
+          "name":"变更前配租资格证号"
+        },
+        {
+          "name":"变更前配租方式"
+        },
+        {
+          "name":"变更原因"
+        },
+        {
+          "name":"是否重新打证"
+        },
+        {
+          "name":"变更次数"
+        },
+        {
+          "name":"年审意见"
+        },
+        {
+          "name":"年审是否通过"
+        },
+        {
+          "name":"历史标志"
+        },
+        {
+          "name":"创建时间"
+        },
+        {
+          "name":"终止时间"
+        },
+        {
+          "name":"所在城区"
+        },
+        {
+          "name":"所属社区"
+        },
+        {
+          "name":"所在街道"
+        },
+        {
+          "name":"公示结果"
+        },
+        {
+          "name":"夹心层"
+        },
+        {
+          "name":"申请渠道"
+        },
+        {
+          "name":"受理时间"
+        },
+        {
+          "name":"是否已摇号；0表示未摇号，1表示已摇号"
+        },
+        {
+          "name":"摇号时间"
+        },
+        {
+          "name":"区局公示状态：0：默认值；1：待公示；2：公示中；3：完成公示"
+        },
+        {
+          "name":"合同签订时间始"
+        },
+        {
+          "name":"合同签订年数"
+        },
+        {
+          "name":"养老保险交纳时间"
+        },
+        {
+          "name":"养老保险交纳年数"
+        },
+        {
+          "name":"住房公积金交纳时间"
+        },
+        {
+          "name":"住房公积金交纳年数"
+        },
+        {
+          "name":"税务完税证明期限"
+        },
+        {
+          "name":"完税年数"
+        },
+        {
+          "name":"营业执照"
+        },
+        {
+          "name":"毕业学校"
+        },
+        {
+          "name":"毕业证号"
+        },
+        {
+          "name":"毕业时间"
+        },
+        {
+          "name":"学历"
+        },
+        {
+          "name":"职称"
+        },
+        {
+          "name":"职业资格"
+        },
+        {
+          "name":"受理人"
+        },
+        {
+          "name":"证件类别"
+        },
+        {
+          "name":"临时赞助证号"
+        },
+        {
+          "name":"职业状态"
+        },
+        {
+          "name":"合租类型"
+        },
+        {
+          "name":"受理编号"
+        },
+        {
+          "name":"摇号期数"
+        },
+        {
+          "name":"摇号年度"
+        },
+        {
+          "name":"档案编号"
+        },
+        {
+          "name":"合同签订时间止"
+        },
+        {
+          "name":"是否已配租"
+        },
+        {
+          "name":"杭州高新区（滨江）创业人才公寓申请类型 1：重点骨干企业；2：重大招商项目；3：其他企业单位"
+        },
+        {
+          "name":"(人工核查状态  0全部返回，1，未核查数据)"
+        },
+        {
+          "name":"终止标示：0：正常；1：终止"
+        },
+        {
+          "name":"申请保障优先类型：1：优先保障；0：常规保障"
+        },
+        {
+          "name":"优先保障类型"
+        },
+        {
+          "name":"档案馆的核查编号，通过当前核查核可以调用到档案馆的核查结果"
+        },
+        {
+          "name":"顺序号：调房申请顺序号"
+        },
+        {
+          "name":"营业执照号"
+        },
+        {
+          "name":"职称/职业资格证书号"
+        },
+        {
+          "name":"旧保障资格证号"
+        },
+        {
+          "name":"注销原因"
+        },
+        {
+          "name":"注销时间"
+        },
+        {
+          "name":"配租类型"
+        },
+        {
+          "name":"货币补贴标准"
+        },
+        {
+          "name":"货币补贴系数"
+        },
+        {
+          "name":"月货币补贴金额"
+        }]
+      }
+
+      ]
+    }
+  ];
+
+
+  // ************** Generate the tree diagram  *****************
+  var margin = {top: 20, right: 120, bottom: 20, left: 120},
+    width = 960 - margin.right - margin.left,
+    height = 800;
+    
+  var i = 0,
+    duration = 750,
+    root;
+
+  var tree = d3.layout.tree()
+    .size([height, width]);
+
+  var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+  var svg = d3.select("#tree-map").append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  root = treeData[0];
+  root.x0 = height / 2;
+  root.y0 = 0;
+    
+  update(root);
+
+  d3.select(self.frameElement).style("height", "500px");
+
+  function update(source) {
+
+    // Compute the new tree layout.
+    var nodes = tree.nodes(root).reverse(),
+      links = tree.links(nodes);
+
+    // Normalize for fixed-depth.
+    nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+    // Update the nodes…
+    var node = svg.selectAll("g.node")
+      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+    // Enter any new nodes at the parent's previous position.
+    var nodeEnter = node.enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .on("click", click);
+
+    nodeEnter.append("circle")
+      .attr("r", 1e-6)
+      .attr("class",function(d){ return d.artifact ? "artifact" : ""})
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+    
+    nodeEnter.select(function(d){ return d.unique? this: null;})
+      .append("circle")
+      .attr("class","unique" )
+      .attr("r", 1e-6);
+
+    nodeEnter.select(function(d){ return d.one2many? this: null;})
+      .append("circle")
+      .attr("class","one2many")
+      .attr("cx", 0);
+      
+
+    nodeEnter.append("text")
+      .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+      .attr("dy", ".35em")
+      .attr("class",function(d){ return d.unique ? "unique" : ""})
+      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6);
+
+    // Transition nodes to their new position.
+    var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+    nodeUpdate.select("circle")
+      .attr("r", 10)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+    nodeUpdate.select("circle.unique")
+      .attr("r", 6)
+      .style("fill", function(d) { return "#ffa500"; });
+      
+    nodeUpdate.select("circle.one2many")
+      .attr("r", 10)
+      .attr("cx", 4);
+
+    nodeUpdate.select("text")
+      .style("fill-opacity", 1);
+
+    // Transition exiting nodes to the parent's new position.
+    var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .remove();
+
+    nodeExit.select("circle")
+      .attr("r", 1e-6);
+    
+    nodeExit.select("circle.unique")
+      .attr("r", 1e-6)
+      .style("fill-opacity", 1e-6);
+
+    nodeExit.select("text")
+      .style("fill-opacity", 1e-6);
+
+    // Update the links…
+    var link = svg.selectAll("path.link")
+      .data(links, function(d) { return d.target.id; });
+
+    // Enter any new links at the parent's previous position.
+    link.enter().insert("path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+      var o = {x: source.x0, y: source.y0};
+      return diagonal({source: o, target: o});
+      });
+
+    // Transition links to their new position.
+    link.transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+    // Transition exiting nodes to the parent's new position.
+    link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+      var o = {x: source.x, y: source.y};
+      return diagonal({source: o, target: o});
+      })
+      .remove();
+
+    // Stash the old positions for transition.
+    nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+    });
+  }
+
+  // Toggle children on click.
+  function click(d) {
+    if (d.children) {
+    d._children = d.children;
+    d.children = null;
+    } else {
+    d.children = d._children;
+    d._children = null;
+    }
+    update(d);
+  }
+
+
