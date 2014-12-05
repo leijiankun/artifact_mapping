@@ -29,6 +29,7 @@
             th 字段
             th 类型
             th 备注
+            th
     hr
 
     .table-model-list#table-model-list
@@ -57,6 +58,17 @@
 javascript:
   var selected_columns = [];
 
+  function remove_selected_column(table,column){
+    tr_class = table + column;
+    $('#selected-columns tr.'+tr_class).remove();
+    for(var i=0;i<selected_columns.length;i++){
+      if((selected_columns[i].table + selected_columns[i].column) == tr_class){
+        selected_columns.splice(i,1);
+        break;
+      }
+    }
+  }
+
   $(function(){
 
     // initialize tables from json
@@ -75,12 +87,16 @@ javascript:
       var table_comment = $(this).parents(".panel").first().find("h3.panel-title").text();
       var table_name = $(this).parents(".panel-body").first().find("span.table_name").text();
       var column_name = $(this).find("td:first").text();
-      
-      $('#selected-columns').append('<tr><td>'+table_comment+'</td>'+$(this).html()+'</tr>');
+
+      var html = '<tr class="'+table_name+column_name+'"><td>'+table_comment+'</td>'+$(this).html();
+      html +='<td><a href="javascript:remove_selected_column(\''+table_name+'\',\''+column_name+'\')">X</a></td>';
+      html +='</tr>';
+      $('#selected-columns').append(html);
       selected_columns.push({table: table_name, column: column_name});
     });
 
   });
+
   
 
   var treeData = [
