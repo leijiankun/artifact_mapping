@@ -73,4 +73,19 @@
   .panel-heading>h3{
     cursor: pointer;
   }
+  tbody tr{
+    cursor: pointer;
+  }
+  tr.primary-key{
+    .column-name{
+      color: rgb(255, 165, 0);
+      font-weight: bold;
+    }
+  }
+  tr.foreign-key{
+    .column-name{
+      color: rgb(224, 102, 58);
+      font-weight: bold;
+    }
+  }
 }

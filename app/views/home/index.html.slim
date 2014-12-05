@@ -20,65 +20,66 @@
   .col-sm-5
     h2 数据库模型
     hr
-    .table-model-list
-      .panel.panel-default
-        .panel-heading
-          h3.panel-title 公租房申请审批表         
-        .panel-body 
-          table.table.table-hover.table-bordered
-            tbody
-              tr
-                td.key ID
-              tr
-                td CODE
-              tr
-                td 业务实例ID
-              tr
-                td 廉租房申请、变更、年审
-              tr
-                td 审批年度
-              tr
-                td ...
+    .selected-columns
+      strong 已选中表字段：
+      table.table.table-hover.table-bordered#selected-columns style="margin-top:5px;"
+        thead
+          tr
+            th 表
+            th 字段
+            th 类型
+            th 备注
+    hr
 
-      .panel.panel-default
-        .panel-heading
-          h3.panel-title 申请人信息         
-        .panel-body 
-          table.table.table-hover.table-bordered
-            tbody
-              tr
-                td.key 申请人ID
-              tr
-                td 申请人CODE
-              tr
-                td 申请人姓名
-              tr
-                td 申请人身份证号
-              tr 
-                td 申请人年龄
-              tr
-                td 申请人工作单位编号
-              tr
-                td 申请人工作单位名称
-              tr
-                td ...
-      .panel.panel-default
-        .panel-heading
-          h3.panel-title 申请人配偶信息  
-      .panel.panel-default
-        .panel-heading
-          h3.panel-title 申请人家庭信息   
-      .panel.panel-default
-        .panel-heading
-          h3.panel-title 其他信息  
+    .table-model-list#table-model-list
+      / .panel.panel-default
+      /   .panel-heading
+      /     h3.panel-title 公租房申请审批表         
+      /   .panel-body 
+      /     table.table.table-hover.table-bordered
+      /       tbody
+      /         tr
+      /           td.key ID
+      /         tr
+      /           td CODE
+      /         tr
+      /           td 业务实例ID
+      /         tr
+      /           td 廉租房申请、变更、年审
+      /         tr
+      /           td 审批年度
+      /         tr
+      /           td ...
+
 
 / = javascript_include_tag "http://www.fudanglp.com/20141125/js/d3.min.js"
 
 javascript:
+  var selected_columns = [];
+
   $(function(){
+
+    // initialize tables from json
+    for(var i=0;i<tables_json.length;i++){
+      $('#table-model-list').append(generate_table(tables_json[i]));
+    }
+
     $('.table-model-list .panel-heading>h3').bind('click',function(){
       $(this).parent().parent().find(".panel-body").slideToggle(400);
     });
+
+    $('#table-model-list .panel-body').hide();
+
+    // click to select a table column 
+    $('#table-model-list table tbody tr').click(function(){
+      var table_comment = $(this).parents(".panel").first().find("h3.panel-title").text();
+      var table_name = $(this).parents(".panel-body").first().find("span.table_name").text();
+      var column_name = $(this).find("td:first").text();
+      
+      $('#selected-columns').append('<tr><td>'+table_comment+'</td>'+$(this).html()+'</tr>');
+      selected_columns.push({table: table_name, column: column_name});
+    });
+
   });
   
 
