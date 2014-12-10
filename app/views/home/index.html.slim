@@ -119,7 +119,7 @@ javascript:
     
   var tree_rootnode;
 
-  d3.json("/assets/data.json" , function(json){
+  d3.json("#{asset_path('data.json')}" , function(json){
     treeData = json;
     height = getTreeHeight(treeData[0]);
 
@@ -178,7 +178,7 @@ javascript:
 
     keyNodes
       .append("use")
-      .attr("xlink:href", "/assets/key_node.svg#key_node")
+      .attr("xlink:href", "#{asset_path('key_node.svg')}#key_node")
       .attr("y", -10)
       .attr("x", -12)
       .attr("transform", "scale(0,0)");
@@ -213,7 +213,7 @@ javascript:
       .on("click", onNodeUpdate);
     groupNodes
       .append("use")
-      .attr("xlink:href", "/assets/group_node.svg#group_node")
+      .attr("xlink:href", "#{asset_path('group_node.svg')}#group_node")
       .attr("y", -10)
       .attr("x", -12)
       .attr("transform", "scale(0,0)");
@@ -230,7 +230,7 @@ javascript:
     var artifactNodes = nodeEnter.select(function(d){ return d.type&&d.type=="artifact"? this: null;});
     artifactNodes
       .append("use")
-      .attr("xlink:href", "/assets/artifact_node.svg#artifact_node")
+      .attr("xlink:href", "#{asset_path('artifact_node.svg')}#artifact_node")
       .attr("y", -10)
       .attr("x", -12)
       .attr("transform", "scale(0,0)")
