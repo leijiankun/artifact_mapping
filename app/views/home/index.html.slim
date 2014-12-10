@@ -99,474 +99,215 @@ javascript:
 
   
 
-  var treeData = [
-    {
-      "name": "公租房审批申请",
-      "parent": "null",
-    "artifact" : true,
-      "children": [
-      {
-        "name": "ID",
-        "unique" : true
-      },
-      {
-        "name": "CODE"
-      },
-      {
-        "name":"业务实例ID"
-      },
-      {
-        "name":"廉租房申请、变更、年审"
-      },
-      {
-        "name":"审批年度"
-      },
-      {
-        "name":"申请人信息",
-        "artifact" : true,
-        "children": [
-        {
-          "name":"申请人ID",
-          "unique" : true
-        },
-        {
-          "name":"申请人CODE"
-        },
-        {
-          "name":"申请人姓名"
-        },
-        {
-          "name":"申请人身份证号"
-        },
-        {
-          "name":"申请人年龄"
-        },
-        {
-          "name":"申请人工作单位编号"
-        },
-        {
-          "name":"申请人工作单位名称"
-        }]
-      },
-      {
-        "name":"申请人配偶信息",
-        "artifact" : true,
-        "children": [
-        {
-          "name":"配偶ID",
-          "unique" : true
-        },
-        {
-          "name":"配偶CODE"
-        },
-        {
-          "name":"配偶姓名"
-        },
-        {
-          "name":"配偶身份证号"
-        },
-        {
-          "name":"配偶年龄"
-        },
-        {
-          "name":"配偶工作单位编号"
-        },
-        {
-          "name":"配偶工作单位名称"
-        }]
-      },
-      {
-        "name":"申请人家庭信息",
-        "artifact" : true,
-        "children": [
-        {
-          "name":"家庭ID",
-          "unique" : true
-        },
-        {
-          "name":"家庭CODE"
-        },
-        {
-          "name":"家庭人数"
-        },
-        {
-          "name":"家庭年总收入"
-        },
-        {
-          "name":"家庭人均年收入"
-        },
-        {
-          "name":"户口入杭年数"
-        },
-        {
-          "name":"家庭住房情况ID"
-        },
-        {
-          "name":"已有住房面积"
-        },
-        {
-          "name":"享受实物分房面积"
-        },
-        {
-          "name":"困难证件类别"
-        },
-        {
-          "name":"困难证件号码"
-        },
-        {
-          "name":"困难证件有效期起"
-        },
-        {
-          "name":"困难证件有效期至"
-        }]
-      },
-      {
-        "name":"其他信息",
-        "artifact" : true,
-        "one2many" : true,
-        "_children": [
-        {
-          "name":"杭社保号"
-        },
-        {
-          "name":"普通、残疾、烈属"
-        },
-        {
-          "name":"配租资格证号"
-        },
-        {
-          "name":"配租方式"
-        },
-        {
-          "name":"拟配租人数"
-        },
-        {
-          "name":"补贴面积"
-        },
-        {
-          "name":"配租面积标准"
-        },
-        {
-          "name":"有效期起"
-        },
-        {
-          "name":"有效期至"
-        },
-        {
-          "name":"市局公示状态：0：默认值；1：待公示；2：公示中；3：完成公示"
-        },
-        {
-          "name":"配租次数"
-        },
-        {
-          "name":"不接受配租方案次数"
-        },
-        {
-          "name":"是否放弃资格"
-        },
-        {
-          "name":"是否取消实物配租资格"
-        },
-        {
-          "name":"是否过渡期"
-        },
-        {
-          "name":"过渡期起"
-        },
-        {
-          "name":"过渡期至"
-        },
-        {
-          "name":"备注"
-        },
-        {
-          "name":"是否有效"
-        },
-        {
-          "name":"变更前审批表ID"
-        },
-        {
-          "name":"变更前配租资格证号"
-        },
-        {
-          "name":"变更前配租方式"
-        },
-        {
-          "name":"变更原因"
-        },
-        {
-          "name":"是否重新打证"
-        },
-        {
-          "name":"变更次数"
-        },
-        {
-          "name":"年审意见"
-        },
-        {
-          "name":"年审是否通过"
-        },
-        {
-          "name":"历史标志"
-        },
-        {
-          "name":"创建时间"
-        },
-        {
-          "name":"终止时间"
-        },
-        {
-          "name":"所在城区"
-        },
-        {
-          "name":"所属社区"
-        },
-        {
-          "name":"所在街道"
-        },
-        {
-          "name":"公示结果"
-        },
-        {
-          "name":"夹心层"
-        },
-        {
-          "name":"申请渠道"
-        },
-        {
-          "name":"受理时间"
-        },
-        {
-          "name":"是否已摇号；0表示未摇号，1表示已摇号"
-        },
-        {
-          "name":"摇号时间"
-        },
-        {
-          "name":"区局公示状态：0：默认值；1：待公示；2：公示中；3：完成公示"
-        },
-        {
-          "name":"合同签订时间始"
-        },
-        {
-          "name":"合同签订年数"
-        },
-        {
-          "name":"养老保险交纳时间"
-        },
-        {
-          "name":"养老保险交纳年数"
-        },
-        {
-          "name":"住房公积金交纳时间"
-        },
-        {
-          "name":"住房公积金交纳年数"
-        },
-        {
-          "name":"税务完税证明期限"
-        },
-        {
-          "name":"完税年数"
-        },
-        {
-          "name":"营业执照"
-        },
-        {
-          "name":"毕业学校"
-        },
-        {
-          "name":"毕业证号"
-        },
-        {
-          "name":"毕业时间"
-        },
-        {
-          "name":"学历"
-        },
-        {
-          "name":"职称"
-        },
-        {
-          "name":"职业资格"
-        },
-        {
-          "name":"受理人"
-        },
-        {
-          "name":"证件类别"
-        },
-        {
-          "name":"临时赞助证号"
-        },
-        {
-          "name":"职业状态"
-        },
-        {
-          "name":"合租类型"
-        },
-        {
-          "name":"受理编号"
-        },
-        {
-          "name":"摇号期数"
-        },
-        {
-          "name":"摇号年度"
-        },
-        {
-          "name":"档案编号"
-        },
-        {
-          "name":"合同签订时间止"
-        },
-        {
-          "name":"是否已配租"
-        },
-        {
-          "name":"杭州高新区（滨江）创业人才公寓申请类型 1：重点骨干企业；2：重大招商项目；3：其他企业单位"
-        },
-        {
-          "name":"(人工核查状态  0全部返回，1，未核查数据)"
-        },
-        {
-          "name":"终止标示：0：正常；1：终止"
-        },
-        {
-          "name":"申请保障优先类型：1：优先保障；0：常规保障"
-        },
-        {
-          "name":"优先保障类型"
-        },
-        {
-          "name":"档案馆的核查编号，通过当前核查核可以调用到档案馆的核查结果"
-        },
-        {
-          "name":"顺序号：调房申请顺序号"
-        },
-        {
-          "name":"营业执照号"
-        },
-        {
-          "name":"职称/职业资格证书号"
-        },
-        {
-          "name":"旧保障资格证号"
-        },
-        {
-          "name":"注销原因"
-        },
-        {
-          "name":"注销时间"
-        },
-        {
-          "name":"配租类型"
-        },
-        {
-          "name":"货币补贴标准"
-        },
-        {
-          "name":"货币补贴系数"
-        },
-        {
-          "name":"月货币补贴金额"
-        }]
-      }
+ // ************** Generate the tree diagram   *****************
 
-      ]
-    }
-  ];
-
-
-  // ************** Generate the tree diagram  *****************
+  var treeData = [];
   var margin = {top: 20, right: 120, bottom: 20, left: 120},
     width = 960 - margin.right - margin.left,
-    height = 800;
-    
+    height;
+
   var i = 0,
     duration = 750,
     root;
 
-  var tree = d3.layout.tree()
-    .size([height, width]);
+  var tree;
 
   var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
 
-  var svg = d3.select("#tree-map").append("svg")
-    .attr("width", width + margin.right + margin.left)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  root = treeData[0];
-  root.x0 = height / 2;
-  root.y0 = 0;
+  var tree_svg;
     
-  update(root);
+  var tree_rootnode;
 
-  d3.select(self.frameElement).style("height", "500px");
+  d3.json("/assets/data.json" , function(json){
+    treeData = json;
+    height = getTreeHeight(treeData[0]);
+
+    root = treeData[0];
+    root.x0 = height / 2;
+    root.y0 = 0;
+
+    tree = d3.layout.tree()
+      .size([height, width]);
+
+    tree_svg = d3.select("#tree-map").append("svg")
+      .attr("width", width + margin.right + margin.left)
+      .attr("height", getLeaveCount(treeData[0])*30 + margin.top + margin.bottom)
+      .style("display", "inlline-block");
+
+    tree_rootnode = tree_svg
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    update(root);
+
+    visitAll(root, 
+      function(node, options){
+        node.artifact = options.parent_artifact?options.parent_artifact: null;
+        return node.type&&node.type=="artifact"?{parent_artifact:node}:options;
+      },
+      {parent_artifact:null});
+  });
 
   function update(source) {
-
+    
     // Compute the new tree layout.
     var nodes = tree.nodes(root).reverse(),
       links = tree.links(nodes);
+
 
     // Normalize for fixed-depth.
     nodes.forEach(function(d) { d.y = d.depth * 180; });
 
     // Update the nodes…
-    var node = svg.selectAll("g.node")
+    var node = tree_rootnode.selectAll("g.node")
       .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
     // Enter any new nodes at the parent's previous position.
     var nodeEnter = node.enter().append("g")
       .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-      .on("click", click);
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; });
 
-    nodeEnter.append("circle")
-      .attr("r", 1e-6)
-      .attr("class",function(d){ return d.artifact ? "artifact" : ""})
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-    
-    nodeEnter.select(function(d){ return d.unique? this: null;})
-      .append("circle")
-      .attr("class","unique" )
-      .attr("r", 1e-6);
+    //根据node类型赋予不同形状
 
-    nodeEnter.select(function(d){ return d.one2many? this: null;})
-      .append("circle")
-      .attr("class","one2many")
-      .attr("cx", 0);
-      
+    //key
+    var keyNodes = nodeEnter.select(function(d){ return d.type&&d.type=="key"? this: null;});
+    keyNodes.attr("class", "node keyNode");
+    keyNodes
+      .on("click", onNodeSelect);
 
-    nodeEnter.append("text")
-      .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+    keyNodes
+      .append("use")
+      .attr("xlink:href", "/assets/key_node.svg#key_node")
+      .attr("y", -10)
+      .attr("x", -12)
+      .attr("transform", "scale(0,0)");
+
+    keyNodes
+      .append("rect")
+      .attr("class", "select_box")
+      .attr("x",27)
+      .attr("y",-10)
+      .attr("rx",3)
+      .attr("ry",3)
+      .attr("zindex", -10)
+      .attr("width", function(d){return d.name.length*13;}) // 计算背景宽度
+      .attr("height",20)
+      .style("fill", "orange")
+      .style("fill-opacity", function(d){return d.isSelected?0.7:1e-6;});
+    keyNodes
+      .append("text")
+      .attr("x", 30)
       .attr("dy", ".35em")
-      .attr("class",function(d){ return d.unique ? "unique" : ""})
-      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .attr("class", "unique")
+      .attr("text-anchor", "start")
       .text(function(d) { return d.name; })
       .style("fill-opacity", 1e-6);
 
+
+  //    <rect x="50" y="20" rx="20" ry="20" width="150" height="150" style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9"/>
+
+    //group
+    var groupNodes = nodeEnter.select(function(d){ return d.type&&d.type=="group"? this: null;});
+    groupNodes
+      .on("click", onNodeUpdate);
+    groupNodes
+      .append("use")
+      .attr("xlink:href", "/assets/group_node.svg#group_node")
+      .attr("y", -10)
+      .attr("x", -12)
+      .attr("transform", "scale(0,0)");
+    groupNodes
+      .append("text")
+      .attr("x", -14)
+      .attr("dy", ".35em")
+      .attr("class", "unique")
+      .attr("text-anchor", "end")
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6);
+
+    //artifact
+    var artifactNodes = nodeEnter.select(function(d){ return d.type&&d.type=="artifact"? this: null;});
+    artifactNodes
+      .append("use")
+      .attr("xlink:href", "/assets/artifact_node.svg#artifact_node")
+      .attr("y", -10)
+      .attr("x", -12)
+      .attr("transform", "scale(0,0)")
+      .on("click", onNodeUpdate);
+    artifactNodes
+      .append("rect")
+      .attr("class", "select_box")
+      .attr("x",function(d){return -(d.name.length*13+12);})
+      .attr("y",-10)
+      .attr("rx",3)
+      .attr("ry",3)
+      .attr("zindex", -10)
+      .attr("width", function(d){return d.name.length*13;}) // 计算背景宽度
+      .attr("height",20)
+      .style("fill", "orange")
+      .style("fill-opacity", function(d){return d.isSelected?0.7:1e-6;})
+      .on("click", onNodeSelect);
+    artifactNodes
+      .append("text")
+      .attr("x", -14)
+      .attr("dy", ".35em")
+      .attr("class", "unique")
+      .attr("text-anchor", "end")
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6)
+      .on("click", onNodeSelect);
+
+    //一般node
+
+    var otherNodes =  nodeEnter.select(function(d){ return d.type? null: this;});
+    otherNodes
+      .on("click", onNodeSelect);
+    otherNodes
+      .append("rect")
+      .attr("class", "select_box")
+      .attr("x",0 )
+      .attr("y",-10)
+      .attr("rx",3)
+      .attr("ry",3)
+      .attr("zindex", -10)
+      .attr("width", function(d){return d.name.length*13+12;}) // 计算背景宽度
+      .attr("height",20)
+      .style("fill", "orange")
+      .style("fill-opacity", function(d){return d.isSelected?0.7:1e-6;})
+      .on("click", onNodeSelect);
+    otherNodes
+      .append("circle")
+      .attr("class", "link_anchor")
+      .attr("r", 1e-6);
+
+    otherNodes.append("text")
+      .attr("x", 13)
+      .attr("dy", ".35em")
+      .attr("text-anchor", "start")
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6);
+
+
+    
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
       .duration(duration)
       .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-    nodeUpdate.select("circle")
-      .attr("r", 10)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-    nodeUpdate.select("circle.unique")
-      .attr("r", 6)
-      .style("fill", function(d) { return "#ffa500"; });
+    //key group artifact
+    nodeUpdate.select(function(d){ return d.type&&(d.type=="key"||d.type=="group"||d.type=="artifact")? this: null;})
+      .select("use")
+      .attr("transform","scale(1, 1)");
       
-    nodeUpdate.select("circle.one2many")
-      .attr("r", 10)
-      .attr("cx", 4);
-
+    //一般node
+    nodeUpdate.select(function(d){ return d.type? null: this;})
+      .select("circle")
+      .attr("r", 10);
+    //select box
+    nodeUpdate.select(".select_box")
+      .style("fill-opacity", function(d){return d.isSelected?0.7:1e-6;});
+    
     nodeUpdate.select("text")
       .style("fill-opacity", 1);
 
@@ -576,32 +317,42 @@ javascript:
       .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
       .remove();
 
-    nodeExit.select("circle")
+    //key group artifact
+    nodeExit.select(function(d){ return d.type&&(d.type=="key"||d.type=="group"||d.type=="artifact")? this: null;})
+      .select("use")
+      .attr("transform","scale(0, 0)");
+      
+    //一般node
+    nodeExit.select(function(d){ return d.type? null: this;})
+      .select("circle")
       .attr("r", 1e-6);
-    
-    nodeExit.select("circle.unique")
-      .attr("r", 1e-6)
+    //select box
+    nodeExit.select(".select_box")
       .style("fill-opacity", 1e-6);
 
     nodeExit.select("text")
       .style("fill-opacity", 1e-6);
 
     // Update the links…
-    var link = svg.selectAll("path.link")
+    var link = tree_rootnode.selectAll("path.link")
       .data(links, function(d) { return d.target.id; });
 
     // Enter any new links at the parent's previous position.
     link.enter().insert("path", "g")
       .attr("class", "link")
       .attr("d", function(d) {
-      var o = {x: source.x0, y: source.y0};
+      var o = {x: source.x0 , y: source.y0};
       return diagonal({source: o, target: o});
       });
 
     // Transition links to their new position.
     link.transition()
       .duration(duration)
-      .attr("d", diagonal);
+      .attr("d", function(d){
+      
+      d.source={x:d.source.x,y:d.source.y+40};
+      return diagonal(d);
+      });
 
     // Transition exiting nodes to the parent's new position.
     link.exit().transition()
@@ -620,15 +371,95 @@ javascript:
   }
 
   // Toggle children on click.
-  function click(d) {
+  function onNodeUpdate(d) {
     if (d.children) {
     d._children = d.children;
     d.children = null;
-    } else {
+    } else if(d._children){
     d.children = d._children;
     d._children = null;
-    }
+    } 
+
+    if(d!=root)update(d);
+    var origin_size = tree.size();
+    var height = getTreeHeight(treeData[0]);
+    tree.size([height,origin_size[1]]);
+    
+    treeData[0].x0 = height / 2;
+    treeData[0].y0 = 0;
+      
     update(d);
+
   }
 
+  function getVisibleLeaveCount(source){
+    var c = 0;
+    if(source.children){
+      for(var node in source.children){
+        c += getVisibleLeaveCount(source.children[node]);
+      }
+    }else {
+      c = 1;
+    }
+    return c;
+  }
+
+  function getLeaveCount(source){
+    var c = 0;
+    if(source.children){
+      for(var node in source.children){
+        c += getLeaveCount(source.children[node]);
+      }
+    }else if(source._children){
+      for(var node in source._children){
+        c += getLeaveCount(source._children[node]);
+      }
+    }else {
+      c = 1;
+    }
+    return c;
+  }
+
+  function getTreeHeight(source){
+    return getVisibleLeaveCount(source)*30;
+  }
+
+  function onNodeSelect(d) {
+    var sb = tree_rootnode.selectAll("g.node")
+      .select(function(dd){return dd.id==d.id?this:null;})
+      .select(".select_box");
+    
+    if(d.isSelected){
+      deSelectAllNodes();
+    }else{
+      deSelectAllNodes();
+      d.isSelected = true;
+      sb.style("fill-opacity", 1);
+
+      updateMappingContainerArtifact(d);
+    }
+
+  }
+
+  function deSelectAllNodes(){
+    visitAll(root, function(d) { d.isSelected = false; }); 
+    tree_rootnode.selectAll(".select_box")
+      .style("fill-opacity", 1e-6);
+  }
+
+  function visitAll(source, action, options) {
+    var options_ = action(source, options?options:{});
+
+    if(source.children){
+      for(var i in source.children)
+        visitAll(source.children[i], action, options_);
+    }else if(source._children){
+      for(var i in source._children)
+        visitAll(source._children[i], action, options_);
+    }
+  }
+
+  function updateMappingContainerArtifact(node){
+    
+  }
 

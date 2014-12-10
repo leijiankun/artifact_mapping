@@ -1060,7 +1060,7 @@ function generate_table(json){
   html += '<h3 class="panel-title">'+json.table_comment+'</h3></div>';
   html += '<div class="panel-body">';
   html += '<span style="display:none;" class="table_name">'+json.table+'</span>';
-  html += '<table class="table table-hover table-bordered">';
+  html += '<table class="table table-hover table-bordered table-stripped">';
   html += '<thead><tr><th>Name</th><th>Type</th><th>Comment</th></tr></thead>';
   html += '<tbody>'
   for(var i=0;i<json.columns.length;i++){
