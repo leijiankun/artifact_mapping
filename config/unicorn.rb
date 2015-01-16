@@ -1,4 +1,4 @@
-worker_processes 2
+worker_processes 1
 
 ##############################################################
 # Rainbows!设置开始

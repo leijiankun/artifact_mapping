@@ -24,10 +24,8 @@ set :rails_env, "production"
 
 # set :rbenv_ruby_dir, '/root/.rbenv/versions/2.1.2/bin'
 
-server '128.199.226.223', user: 'root', roles: %w{web app} #, my_property: :my_value
+server '121.40.96.243', user: 'root', roles: %w{web app} #, my_property: :my_value
 
-
-# server '128.199.197.234', user: 'root', roles: %w{web app} 
 
 set :rbenv_path,    "/root/.rbenv"
 set :current_path,  "#{deploy_to}/current"
