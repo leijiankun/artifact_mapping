@@ -30,6 +30,7 @@
             th 类型
             th 备注
             th
+        tbody
     hr
 
     .table-model-list#table-model-list
@@ -60,7 +61,7 @@ javascript:
 
   function remove_selected_column(table,column){
     tr_class = table + column;
-    $('#selected-columns tr.'+tr_class).remove();
+    $('#selected-columns tbody tr.'+tr_class).remove();
     for(var i=0;i<selected_columns.length;i++){
       if((selected_columns[i].table + selected_columns[i].column) == tr_class){
         selected_columns.splice(i,1);
@@ -69,11 +70,12 @@ javascript:
     }
   }
 
-  $(function(){
-
+  function init_tables(data){
+    $('#table-model-list').empty();
+    $('#selected-columns tbody tr').remove();
     // initialize tables from json
-    for(var i=0;i<tables_json.length;i++){
-      $('#table-model-list').append(generate_table(tables_json[i]));
+    for(var i=0;i<data.length;i++){
+      $('#table-model-list').append(generate_table(data[i]));
     }
 
     $('.table-model-list .panel-heading>h3').bind('click',function(){
@@ -91,9 +93,37 @@ javascript:
       var html = '<tr class="'+table_name+column_name+'"><td>'+table_comment+'</td>'+$(this).html();
       html +='<td><a href="javascript:remove_selected_column(\''+table_name+'\',\''+column_name+'\')">X</a></td>';
       html +='</tr>';
-      $('#selected-columns').append(html);
+      $('#selected-columns tbody').append(html);
       selected_columns.push({table: table_name, column: column_name});
     });
+
+  }
+
+  $(function(){
+
+    init_tables(tables_json);
+
+    // upload sql file
+    $("#upload-sql-file").click(function(){
+        $("#filechooser2").click();
+      });
+
+    $('#filechooser2').fileupload({
+        url: '/parse_sql',
+        dataType: 'json',
+        start: function(){
+          $('#upload-sql-file').addClass("disabled");
+        },
+        done: function (e, data) {
+          init_tables(data.result);
+        },
+        error: function(){
+          alert("导入模型失败");
+        },
+        complete: function(){
+          $('#upload-sql-file').removeClass("disabled");
+        }
+    }); 
 
   });
 
@@ -462,4 +492,3 @@ javascript:
   function updateMappingContainerArtifact(node){
     
   }
-

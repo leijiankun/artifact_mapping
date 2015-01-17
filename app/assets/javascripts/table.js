@@ -1061,7 +1061,7 @@ function generate_table(json){
   html += '<div class="panel-body">';
   html += '<span style="display:none;" class="table_name">'+json.table+'</span>';
   html += '<table class="table table-hover table-bordered table-stripped">';
-  html += '<thead><tr><th>Name</th><th>Type</th><th>Comment</th></tr></thead>';
+  html += '<thead><tr><th>名称</th><th>类型</th><th>说明</th></tr></thead>';
   html += '<tbody>'
   for(var i=0;i<json.columns.length;i++){
     tr_class = json.columns[i].primary_key ? 'primary-key' : '';
@@ -1069,7 +1069,7 @@ function generate_table(json){
     html += '<tr class="'+ tr_class +'">';
     html += '<td class="column-name">'+json.columns[i].name+'</td>';
     html += '<td class="column-type">'+json.columns[i].type+'</td>';
-    html += '<td class="column-comment">'+json.columns[i].comment+'</td>';
+    html += '<td class="column-comment">'+(json.columns[i].comment !=undefined ? json.columns[i].comment : '')+'</td>';
     html += '</tr>';
   }
   html += '</tbody></table>';

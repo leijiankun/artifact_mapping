@@ -42,6 +42,8 @@ gem 'bootstrap-sass'
 gem 'font-awesome-sass'
 # gem 'ckeditor_rails'
 
+gem 'jquery-fileupload-rails'
+
 # Paginator
 gem 'kaminari'
 
