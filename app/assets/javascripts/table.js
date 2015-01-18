@@ -1067,8 +1067,8 @@ function generate_table(json){
     tr_class = json.columns[i].primary_key ? 'primary-key' : '';
     tr_class += json.columns[i].foreign_key ? 'foreign-key' : '';
     html += '<tr class="'+ tr_class +'">';
-    html += '<td class="column-name">'+json.columns[i].name+'</td>';
-    html += '<td class="column-type">'+json.columns[i].type+'</td>';
+    html += '<td class="column-name">'+json.columns[i].name +'</td>';
+    html += '<td class="column-type">'+json.columns[i].type +(json.columns[i].size != undefined ? ('('+json.columns[i].size+')') : '') +'</td>';
     html += '<td class="column-comment">'+(json.columns[i].comment !=undefined ? json.columns[i].comment : '')+'</td>';
     html += '</tr>';
   }

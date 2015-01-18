@@ -53,10 +53,24 @@ class SqlParser
           end
 
           attributes.push attribute
+          break
         end
 
         count = count + 1
       end
+
+      # primary key
+      primary_key = column[/primary\skey\s[\(\w`\)]+/]
+      if primary_key
+        primary_key = primary_key[/\([\w`]+\)/].gsub('(','').gsub(')','').gsub('`','')
+        attributes.each do |attribute| 
+          if attribute[:name] == primary_key
+            attribute[:primary_key] = true
+            break
+          end
+        end
+      end
+
     end
     
     table[:columns] = attributes
