@@ -283,6 +283,7 @@ DEPENDENCIES
   rest_client
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
+  sidekiq
   simple_form!
   slim-rails
   turbolinks
