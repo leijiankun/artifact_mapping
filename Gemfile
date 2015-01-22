@@ -16,10 +16,11 @@ gem 'coffee-rails', '~> 4.0.0'
 # gem 'therubyracer',  platforms: :ruby
 
 gem 'enumerize'
-gem 'sidekiq'
+# gem 'sidekiq'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -72,7 +73,7 @@ gem 'rails_admin'
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 
 group :development do
-  gem "better_errors"
+  # gem "better_errors"
   gem 'pry'
   gem 'pry-remote'
   gem 'pry-nav'

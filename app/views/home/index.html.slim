@@ -16,21 +16,8 @@
     </div>
     / iframe src="http://www.fudanglp.com/20141125/hz.html" style="border:0;width:680px;height:900px;overflow:hidden;"
     .tree-map#tree-map
-  .col-sm-1
   .col-sm-5
     h2 数据库模型
-    hr
-    .selected-columns
-      strong 已选中表字段：
-      table.table.table-hover.table-bordered#selected-columns style="margin-top:5px;"
-        thead
-          tr
-            th 表
-            th 字段
-            th 类型
-            th 备注
-            th
-        tbody
     hr
 
     .table-model-list#table-model-list
@@ -52,443 +39,45 @@
       /           td 审批年度
       /         tr
       /           td ...
+.row#mapping_panel
+  .col-sm-5
+    #map-artifact
+      svg width="500px" height="120px"
+  .col-sm-1
+    #map-button
+      a href="javascript:void(0);"
+        |Map
+  .col-sm-5
+    #map-database
+      .db_name
+        h3
+      .db_item
+        table.table.table-bordered
+          tr
+            td.column-name
+            td.column-type
+            td.column-comment
+
+.modal.fade#mapping-rules-modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true"
+            |&times;
+        h4.modal-title
+          |映射规则
+      .modal-body
+        
+      .modal-footer
+        button.btn.btn-primary type="button"
+          |导出映射规则
+        button.btn.btn-default type="button" data-dismiss="modal"
+          |Close
 
 
-/ = javascript_include_tag "http://www.fudanglp.com/20141125/js/d3.min.js"
+            
+    
 
 javascript:
-  var selected_columns = [];
 
-  function remove_selected_column(table,column){
-    tr_class = table + column;
-    $('#selected-columns tbody tr.'+tr_class).remove();
-    for(var i=0;i<selected_columns.length;i++){
-      if((selected_columns[i].table + selected_columns[i].column) == tr_class){
-        selected_columns.splice(i,1);
-        break;
-      }
-    }
-  }
-
-  function init_tables(data){
-    $('#table-model-list').empty();
-    $('#selected-columns tbody tr').remove();
-    // initialize tables from json
-    for(var i=0;i<data.length;i++){
-      $('#table-model-list').append(generate_table(data[i]));
-    }
-
-    $('.table-model-list .panel-heading>h3').bind('click',function(){
-      $(this).parent().parent().find(".panel-body").slideToggle(400);
-    });
-
-    $('#table-model-list .panel-body').hide();
-
-    // click to select a table column 
-    $('#table-model-list table tbody tr').click(function(){
-      var table_comment = $(this).parents(".panel").first().find("h3.panel-title").text();
-      var table_name = $(this).parents(".panel-body").first().find("span.table_name").text();
-      var column_name = $(this).find("td:first").text();
-
-      var html = '<tr class="'+table_name+column_name+'"><td>'+table_comment+'</td>'+$(this).html();
-      html +='<td><a href="javascript:remove_selected_column(\''+table_name+'\',\''+column_name+'\')">X</a></td>';
-      html +='</tr>';
-      $('#selected-columns tbody').append(html);
-      selected_columns.push({table: table_name, column: column_name});
-    });
-
-  }
-
-  $(function(){
-
-    init_tables(tables_json);
-
-    // upload sql file
-    $("#upload-sql-file").click(function(){
-        $("#filechooser2").click();
-      });
-
-    $('#filechooser2').fileupload({
-        url: '/parse_sql',
-        dataType: 'json',
-        start: function(){
-          $('#upload-sql-file').addClass("disabled");
-        },
-        done: function (e, data) {
-          init_tables(data.result);
-        },
-        error: function(){
-          alert("导入模型失败");
-        },
-        complete: function(){
-          $('#upload-sql-file').removeClass("disabled");
-        }
-    }); 
-
-  });
-
-  
-
- // ************** Generate the tree diagram   *****************
-
-  var treeData = [];
-  var margin = {top: 20, right: 120, bottom: 20, left: 120},
-    width = 960 - margin.right - margin.left,
-    height;
-
-  var i = 0,
-    duration = 750,
-    root;
-
-  var tree;
-
-  var diagonal = d3.svg.diagonal()
-    .projection(function(d) { return [d.y, d.x]; });
-
-  var tree_svg;
-    
-  var tree_rootnode;
-
-  d3.json("#{asset_path('data.json')}" , function(json){
-    treeData = json;
-    height = getTreeHeight(treeData[0]);
-
-    root = treeData[0];
-    root.x0 = height / 2;
-    root.y0 = 0;
-
-    tree = d3.layout.tree()
-      .size([height, width]);
-
-    tree_svg = d3.select("#tree-map").append("svg")
-      .attr("width", width + margin.right + margin.left)
-      .attr("height", getLeaveCount(treeData[0])*30 + margin.top + margin.bottom)
-      .style("display", "inlline-block");
-
-    tree_rootnode = tree_svg
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    update(root);
-
-    visitAll(root, 
-      function(node, options){
-        node.artifact = options.parent_artifact?options.parent_artifact: null;
-        return node.type&&node.type=="artifact"?{parent_artifact:node}:options;
-      },
-      {parent_artifact:null});
-  });
-
-  function update(source) {
-    
-    // Compute the new tree layout.
-    var nodes = tree.nodes(root).reverse(),
-      links = tree.links(nodes);
-
-
-    // Normalize for fixed-depth.
-    nodes.forEach(function(d) { d.y = d.depth * 180; });
-
-    // Update the nodes…
-    var node = tree_rootnode.selectAll("g.node")
-      .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-    // Enter any new nodes at the parent's previous position.
-    var nodeEnter = node.enter().append("g")
-      .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; });
-
-    //根据node类型赋予不同形状
-
-    //key
-    var keyNodes = nodeEnter.select(function(d){ return d.type&&d.type=="key"? this: null;});
-    keyNodes.attr("class", "node keyNode");
-    keyNodes
-      .on("click", onNodeSelect);
-
-    keyNodes
-      .append("use")
-      .attr("xlink:href", "#{asset_path('key_node.svg')}#key_node")
-      .attr("y", -10)
-      .attr("x", -12)
-      .attr("transform", "scale(0,0)");
-
-    keyNodes
-      .append("rect")
-      .attr("class", "select_box")
-      .attr("x",27)
-      .attr("y",-10)
-      .attr("rx",3)
-      .attr("ry",3)
-      .attr("zindex", -10)
-      .attr("width", function(d){return d.name.length*13;}) // 计算背景宽度
-      .attr("height",20)
-      .style("fill", "orange")
-      .style("fill-opacity", function(d){return d.isSelected?0.7:1e-6;});
-    keyNodes
-      .append("text")
-      .attr("x", 30)
-      .attr("dy", ".35em")
-      .attr("class", "unique")
-      .attr("text-anchor", "start")
-      .text(function(d) { return d.name; })
-      .style("fill-opacity", 1e-6);
-
-
-  //    <rect x="50" y="20" rx="20" ry="20" width="150" height="150" style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9"/>
-
-    //group
-    var groupNodes = nodeEnter.select(function(d){ return d.type&&d.type=="group"? this: null;});
-    groupNodes
-      .on("click", onNodeUpdate);
-    groupNodes
-      .append("use")
-      .attr("xlink:href", "#{asset_path('group_node.svg')}#group_node")
-      .attr("y", -10)
-      .attr("x", -12)
-      .attr("transform", "scale(0,0)");
-    groupNodes
-      .append("text")
-      .attr("x", -14)
-      .attr("dy", ".35em")
-      .attr("class", "unique")
-      .attr("text-anchor", "end")
-      .text(function(d) { return d.name; })
-      .style("fill-opacity", 1e-6);
-
-    //artifact
-    var artifactNodes = nodeEnter.select(function(d){ return d.type&&d.type=="artifact"? this: null;});
-    artifactNodes
-      .append("use")
-      .attr("xlink:href", "#{asset_path('artifact_node.svg')}#artifact_node")
-      .attr("y", -10)
-      .attr("x", -12)
-      .attr("transform", "scale(0,0)")
-      .on("click", onNodeUpdate);
-    artifactNodes
-      .append("rect")
-      .attr("class", "select_box")
-      .attr("x",function(d){return -(d.name.length*13+12);})
-      .attr("y",-10)
-      .attr("rx",3)
-      .attr("ry",3)
-      .attr("zindex", -10)
-      .attr("width", function(d){return d.name.length*13;}) // 计算背景宽度
-      .attr("height",20)
-      .style("fill", "orange")
-      .style("fill-opacity", function(d){return d.isSelected?0.7:1e-6;})
-      .on("click", onNodeSelect);
-    artifactNodes
-      .append("text")
-      .attr("x", -14)
-      .attr("dy", ".35em")
-      .attr("class", "unique")
-      .attr("text-anchor", "end")
-      .text(function(d) { return d.name; })
-      .style("fill-opacity", 1e-6)
-      .on("click", onNodeSelect);
-
-    //一般node
-
-    var otherNodes =  nodeEnter.select(function(d){ return d.type? null: this;});
-    otherNodes
-      .on("click", onNodeSelect);
-    otherNodes
-      .append("rect")
-      .attr("class", "select_box")
-      .attr("x",0 )
-      .attr("y",-10)
-      .attr("rx",3)
-      .attr("ry",3)
-      .attr("zindex", -10)
-      .attr("width", function(d){return d.name.length*13+12;}) // 计算背景宽度
-      .attr("height",20)
-      .style("fill", "orange")
-      .style("fill-opacity", function(d){return d.isSelected?0.7:1e-6;})
-      .on("click", onNodeSelect);
-    otherNodes
-      .append("circle")
-      .attr("class", "link_anchor")
-      .attr("r", 1e-6);
-
-    otherNodes.append("text")
-      .attr("x", 13)
-      .attr("dy", ".35em")
-      .attr("text-anchor", "start")
-      .text(function(d) { return d.name; })
-      .style("fill-opacity", 1e-6);
-
-
-    
-    // Transition nodes to their new position.
-    var nodeUpdate = node.transition()
-      .duration(duration)
-      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-
-    //key group artifact
-    nodeUpdate.select(function(d){ return d.type&&(d.type=="key"||d.type=="group"||d.type=="artifact")? this: null;})
-      .select("use")
-      .attr("transform","scale(1, 1)");
-      
-    //一般node
-    nodeUpdate.select(function(d){ return d.type? null: this;})
-      .select("circle")
-      .attr("r", 10);
-    //select box
-    nodeUpdate.select(".select_box")
-      .style("fill-opacity", function(d){return d.isSelected?0.7:1e-6;});
-    
-    nodeUpdate.select("text")
-      .style("fill-opacity", 1);
-
-    // Transition exiting nodes to the parent's new position.
-    var nodeExit = node.exit().transition()
-      .duration(duration)
-      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-      .remove();
-
-    //key group artifact
-    nodeExit.select(function(d){ return d.type&&(d.type=="key"||d.type=="group"||d.type=="artifact")? this: null;})
-      .select("use")
-      .attr("transform","scale(0, 0)");
-      
-    //一般node
-    nodeExit.select(function(d){ return d.type? null: this;})
-      .select("circle")
-      .attr("r", 1e-6);
-    //select box
-    nodeExit.select(".select_box")
-      .style("fill-opacity", 1e-6);
-
-    nodeExit.select("text")
-      .style("fill-opacity", 1e-6);
-
-    // Update the links…
-    var link = tree_rootnode.selectAll("path.link")
-      .data(links, function(d) { return d.target.id; });
-
-    // Enter any new links at the parent's previous position.
-    link.enter().insert("path", "g")
-      .attr("class", "link")
-      .attr("d", function(d) {
-      var o = {x: source.x0 , y: source.y0};
-      return diagonal({source: o, target: o});
-      });
-
-    // Transition links to their new position.
-    link.transition()
-      .duration(duration)
-      .attr("d", function(d){
-      
-      d.source={x:d.source.x,y:d.source.y+40};
-      return diagonal(d);
-      });
-
-    // Transition exiting nodes to the parent's new position.
-    link.exit().transition()
-      .duration(duration)
-      .attr("d", function(d) {
-      var o = {x: source.x, y: source.y};
-      return diagonal({source: o, target: o});
-      })
-      .remove();
-
-    // Stash the old positions for transition.
-    nodes.forEach(function(d) {
-    d.x0 = d.x;
-    d.y0 = d.y;
-    });
-  }
-
-  // Toggle children on click.
-  function onNodeUpdate(d) {
-    if (d.children) {
-    d._children = d.children;
-    d.children = null;
-    } else if(d._children){
-    d.children = d._children;
-    d._children = null;
-    } 
-
-    if(d!=root)update(d);
-    var origin_size = tree.size();
-    var height = getTreeHeight(treeData[0]);
-    tree.size([height,origin_size[1]]);
-    
-    treeData[0].x0 = height / 2;
-    treeData[0].y0 = 0;
-      
-    update(d);
-
-  }
-
-  function getVisibleLeaveCount(source){
-    var c = 0;
-    if(source.children){
-      for(var node in source.children){
-        c += getVisibleLeaveCount(source.children[node]);
-      }
-    }else {
-      c = 1;
-    }
-    return c;
-  }
-
-  function getLeaveCount(source){
-    var c = 0;
-    if(source.children){
-      for(var node in source.children){
-        c += getLeaveCount(source.children[node]);
-      }
-    }else if(source._children){
-      for(var node in source._children){
-        c += getLeaveCount(source._children[node]);
-      }
-    }else {
-      c = 1;
-    }
-    return c;
-  }
-
-  function getTreeHeight(source){
-    return getVisibleLeaveCount(source)*30;
-  }
-
-  function onNodeSelect(d) {
-    var sb = tree_rootnode.selectAll("g.node")
-      .select(function(dd){return dd.id==d.id?this:null;})
-      .select(".select_box");
-    
-    if(d.isSelected){
-      deSelectAllNodes();
-    }else{
-      deSelectAllNodes();
-      d.isSelected = true;
-      sb.style("fill-opacity", 1);
-
-      updateMappingContainerArtifact(d);
-    }
-
-  }
-
-  function deSelectAllNodes(){
-    visitAll(root, function(d) { d.isSelected = false; }); 
-    tree_rootnode.selectAll(".select_box")
-      .style("fill-opacity", 1e-6);
-  }
-
-  function visitAll(source, action, options) {
-    var options_ = action(source, options?options:{});
-
-    if(source.children){
-      for(var i in source.children)
-        visitAll(source.children[i], action, options_);
-    }else if(source._children){
-      for(var i in source._children)
-        visitAll(source._children[i], action, options_);
-    }
-  }
-
-  function updateMappingContainerArtifact(node){
-    
-  }

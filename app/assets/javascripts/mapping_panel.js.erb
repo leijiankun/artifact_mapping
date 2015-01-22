@@ -1,0 +1,244 @@
+//= require jquery
+//= require d3.min
+//= require jquery-ui
+
+var mapping_panel = new (function(){
+	//properties
+	var _panel;
+	var _svg;
+	var _db_container;
+	this._artifact_node = null;
+	this._db_item = null;
+
+	//methods
+	this.updateArtifact = function(d){
+		_panel.show("slide", { direction: "down" }, 500);
+
+		this._artifact_node = d;
+
+		//clear up
+		_svg.html("");
+
+		//create selected
+		var g = _svg	
+					.append("g")
+					.attr("transform", "translate(0,30)");
+
+		if(d.type == "artifact"){
+			g
+				.append("use")
+				.attr("xlink:href", "<%= asset_path('artifact_node.svg')%>#artifact_node")
+				.attr("y", 0)
+				.attr("x", 0)
+				.attr("transform", "scale(3,3)");
+
+		}else if(d.type == "key"){
+			g
+				.append("use")
+				.attr("xlink:href", "<%= asset_path('key_node.svg')%>#key_node")
+				.attr("y", 0)
+				.attr("x", 20)
+				.attr("transform", "scale(3,3)");
+			
+		}else{ //node
+			g.attr("class", "node");
+			g
+				.append("circle")
+				.attr("r", 20)
+				.attr("cx", 165)
+				.attr("cy", 30);
+		}
+
+		g
+			.append("text")
+			.attr("class", "name")
+			.attr("text-anchor", "start")
+			.attr("x", 210)
+			.attr("y", 40)
+			.text(d.name);
+	}
+
+	this.updateDatabase = function(db){
+		if(db.length<1)return;
+		this._db_item = db[0];
+		_panel.show("slide", { direction: "down" }, 500);
+		_db_container.show();
+		_db_container.find(".db_name h3").text(db[0].table_comment+" "+db[0].table);
+		
+		_db_container.find(".column-name").text(db[0].column.name);
+		_db_container.find(".column-type").text(db[0].column.type);
+		_db_container.find(".column-comment").text(db[0].column.comment);
+			
+	}
+
+	this.doMapping = function(evt){
+		var node = evt.data._artifact_node;
+		var db = evt.data._db_item;
+
+		if(!node||!db)
+			return;
+		
+		if(!evt.data.checkIfMappable(node, db))
+			return;
+
+		var p = findParentArtifact(node);
+		var rule = {};
+		if(node.type == "key"){
+			p.mapped = true;
+			p.mr = {
+				table: db.table,
+				key: node
+			};
+			node.mapped = true;
+			node.mr = db;
+			rule = {
+				node: node,
+				parent_artifact: p,
+				db: db,
+				rule_text: 	"[key]"+p.name+"."+node.name+"@"+
+							db.table+"("+db.column.name+")"
+			};
+
+		}else if(!node.type){
+			node.mapped = true;
+			node.mr = db;
+			rule = {
+				node: node,
+				parent_artifact: p,
+				db: db,
+				rule_text: 	"[attribute]"+node.name+"."+p.name+"."+p.mr.key.name+"@"+
+							p.mr.table+"("+p.mr.key.mr.column.name+")."+db.column.name
+			};
+		}
+
+		
+
+		//do the view updates
+		var rid = getRuleIndexById(node.id);
+		if(rid>=0){
+			mapping_rules[rid] = rule;
+
+		}else {
+			mapping_rules.push(rule);
+			$("#menu-btn-rules").text("查看Mapping Rules("+mapping_rules.length+")");
+		}
+
+		var g = tree_rootnode.selectAll("g.node")
+			.select(function(dd){return dd.id==node.id?this:null;});
+		var coord = d3.transform(g.attr("transform")).translate;
+
+		var source = {x:coord[1],y:coord[0]+node.name.length*13+13};
+
+		var t_index = getTableIndex(db.table);
+		var c_index = getColumnIndex(db.column.name, table_data[t_index]);
+		var target = {y:802,x:40*t_index+65+36.5*c_index+17};
+		
+		console.log(c_index);
+/*
+		tree_rootnode
+			.append("path")
+			.attr("d", diagonal({source:source, target:target}))
+			.attr("stroke","orange")
+			.attr("stroke-width", 2)
+			.attr("fill","none");
+			*/
+	}
+
+	var getTableIndex = function(t){
+		for(var i=0;i<table_data.length;i++){
+			if(table_data[i].table == t)
+				return i;
+		}
+		return -1;
+	}
+
+
+	var getColumnIndex = function(c, t){
+		for(var i=0;i<t.columns.length;i++){
+			if(t.columns[i].name == c)
+				return i;
+		}
+		return -1;
+	}
+
+	var getRuleIndexById = function(id){
+		for(var i=0;i<mapping_rules.length;i++){
+			if(mapping_rules[i].node.id == id)
+				return i;
+		}
+		return -1;
+	}
+
+
+	var findParentArtifact = function(d){
+		var p = d.parent;
+		if(!p)
+			return null;
+		while(p&&p.type != "artifact"&&p.type!="artifact_n"){
+			p = p.parent;
+		}
+		return p;
+	};
+
+	this.checkIfMappable = function(node, db){
+		/*	two major type of node here:
+				1 artifact			
+				2 key/attribute
+			
+		*/
+		console.log(db);
+		
+		if(node.parent) {		//not root?
+			var p = findParentArtifact(node);
+			if(node.type == "key"){		//id?
+				var pp = findParentArtifact(p);
+				if(pp){		//sub artifact?
+					if(!pp.mapped) 	//parent artifact must be mapped
+						return false;
+					if(!db.column.primary_key)		// must map to primary key
+						return false;
+					// TODO: check if db has foreign key to its parent
+
+					return true;
+				}else {		// main artifact
+					if(!db.column.primary_key)
+						return false;
+					return true;
+				}
+			}else if (node.type == "artifact"){
+				// TODO: 
+				return false;
+			}else if (node.type == "artifact_n"){
+				// TODO:
+				return false;
+			}else {	//attribute node
+				if(!p.mapped)
+					return false;
+				if(p.mr.table!=db.table) // must map into same table 
+					return false;
+				return true;
+			}
+		}else {
+			return false; //ignore artifact node for now
+		}
+
+		return false; 
+	}
+
+	this.init = function(){
+		_svg = d3.select("#mapping_panel div#map-artifact svg");
+		_db_container = $("#mapping_panel div#map-database");
+		_panel = $("#mapping_panel");
+		_panel.hide();
+		_db_container.hide();
+
+		$("#mapping_panel #map-button").click(this, this.doMapping);
+	}
+
+
+});
+
+//do init after render
+$(document).ready(function(){
+	mapping_panel.init();
+});

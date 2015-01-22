@@ -1,0 +1,14 @@
+var mapping_rules = [];
+
+
+
+$(document).ready(function(){
+	$("#menu-btn-rules").click(function(){
+		var html = "";
+		for(var i=0;i<mapping_rules.length;i++){
+			html +="<p>"+mapping_rules[i].rule_text+"</p>";
+		}
+		$("#mapping-rules-modal .modal-body").html(html);
+		$("#mapping-rules-modal").modal();
+	});
+});

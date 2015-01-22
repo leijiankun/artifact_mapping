@@ -1,3 +1,134 @@
+var selected_columns = [];
+
+var table_data = [];
+
+function remove_selected_column(table,column){
+    tr_class = table + column;
+    $('#selected-columns tbody tr.'+tr_class).remove();
+    for(var i=0;i<selected_columns.length;i++){
+        if((selected_columns[i].table + selected_columns[i].column) == tr_class){
+            selected_columns.splice(i,1);
+            break;
+        }
+    }
+}
+
+function init_tables(data){
+    table_data = data;
+    $('#table-model-list').empty();
+    $('#selected-columns tbody tr').remove();
+    // initialize tables from json
+    for(var i=0;i<data.length;i++){
+        $('#table-model-list').append(generate_table(data[i]));
+    }
+
+    $('.table-model-list .panel-heading>h3').bind('click',function(){
+        $(this).parent().parent().find(".panel-body").slideToggle(400);
+    });
+
+    $('#table-model-list .panel-body').hide();
+
+    // click to select a table column 
+    $('#table-model-list table tbody tr').click(function(){
+        var table_id = $(this).attr("table_id");
+        var column_index = $(this).attr("column_index");
+        
+        var lookUpColumn = function(tid, cid){
+            for(var t=0;t<table_data.length;t++){
+                if(table_data[t].table == tid){
+                    var column_data = table_data[t].columns[column_index];
+                    return  {
+                                table_comment: table_data[t].table_comment,
+                                column_data: column_data
+                            };
+                }
+            }
+        }
+
+        var r = lookUpColumn(table_id, column_index);
+
+        var table_comment = r.table_comment;
+        
+        /*
+        var html = '<tr class="'+table_name+column_name+'"><td>'+table_comment+'</td>'+$(this).html();
+        html +='<td><a href="javascript:remove_selected_column(\''+table_name+'\',\''+column_name+'\')">X</a></td>';
+        html +='</tr>';
+        $('#selected-columns tbody').append(html);
+        */
+        selected_columns = [];
+        selected_columns.push({
+            table: table_id, 
+            table_comment:table_comment, 
+            column: r.column_data
+        });
+
+        //css 
+        $('#table-model-list table tbody tr').removeClass("active");
+        $(this).addClass("active");
+
+        //notify mapping_panel
+        if(mapping_panel)
+            mapping_panel.updateDatabase(selected_columns);
+    });
+
+}
+
+
+function generate_table(json){
+  var html = '<div class="panel panel-default"><div class="panel-heading">';
+  html += '<h3 class="panel-title">'+json.table_comment+'</h3></div>';
+  html += '<div class="panel-body">';
+  html += '<span style="display:none;" class="table_name">'+json.table+'</span>';
+  html += '<table class="table table-hover table-bordered table-stripped">';
+  html += '<thead><tr><th>名称</th><th>类型</th><th>说明</th></tr></thead>';
+  html += '<tbody>'
+  for(var i=0;i<json.columns.length;i++){
+    tr_class = json.columns[i].primary_key ? 'primary-key' : '';
+    tr_class += json.columns[i].foreign_key ? 'foreign-key' : '';
+    html += '<tr class="'+ tr_class +'" column_index='+ i +' table_id = "'+ json.table +'">';
+    html += '<td class="column-name">'+json.columns[i].name +'</td>';
+    html += '<td class="column-type">'+json.columns[i].type +(json.columns[i].size != undefined ? ('('+json.columns[i].size+')') : '') +'</td>';
+    html += '<td class="column-comment">'+(json.columns[i].comment !=undefined ? json.columns[i].comment : '')+'</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  html += '</div></div>';
+  return html;
+}
+
+$(function(){
+
+    init_tables(tables_json);
+
+    // upload sql file
+    $("#upload-sql-file").click(function(){
+        $("#filechooser2").click();
+      });
+
+    $('#filechooser2').fileupload({
+        url: '/parse_sql',
+        dataType: 'json',
+        start: function(){
+          $('#upload-sql-file').addClass("disabled");
+        },
+        done: function (e, data) {
+          init_tables(data.result);
+        },
+        error: function(){
+          alert("导入模型失败");
+        },
+        complete: function(){
+          $('#upload-sql-file').removeClass("disabled");
+        }
+    }); 
+
+});
+
+  
+
+  
+
+
 var tables_json = [
     {
         "table": "tb1", 
@@ -1054,25 +1185,3 @@ var tables_json = [
         ]
     }
 ];
-
-function generate_table(json){
-  var html = '<div class="panel panel-default"><div class="panel-heading">';
-  html += '<h3 class="panel-title">'+json.table_comment+'</h3></div>';
-  html += '<div class="panel-body">';
-  html += '<span style="display:none;" class="table_name">'+json.table+'</span>';
-  html += '<table class="table table-hover table-bordered table-stripped">';
-  html += '<thead><tr><th>名称</th><th>类型</th><th>说明</th></tr></thead>';
-  html += '<tbody>'
-  for(var i=0;i<json.columns.length;i++){
-    tr_class = json.columns[i].primary_key ? 'primary-key' : '';
-    tr_class += json.columns[i].foreign_key ? 'foreign-key' : '';
-    html += '<tr class="'+ tr_class +'">';
-    html += '<td class="column-name">'+json.columns[i].name +'</td>';
-    html += '<td class="column-type">'+json.columns[i].type +(json.columns[i].size != undefined ? ('('+json.columns[i].size+')') : '') +'</td>';
-    html += '<td class="column-comment">'+(json.columns[i].comment !=undefined ? json.columns[i].comment : '')+'</td>';
-    html += '</tr>';
-  }
-  html += '</tbody></table>';
-  html += '</div></div>';
-  return html;
-}

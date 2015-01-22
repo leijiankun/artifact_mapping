@@ -8,7 +8,7 @@ RailsAdmin.config do |config|
   end
   config.current_user_method(&:current_staff)
 
-  config.main_app_name = ['笛威欧亚', '后台管理']
+  config.main_app_name = ['admin', 'admin']
   config.default_items_per_page = 50
   config.total_columns_width = 960
 

@@ -25,56 +25,19 @@
   }
 }
 
-.node {
-  cursor: pointer;
-}
-
-.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 3px;
-}
-
-.node circle.artifact {
-  fill: #fff;
-  stroke: lightsteelblue;
-  stroke-width: 2px;
-}
-.node circle.one2many {
-  fill: #fff;
-  stroke: lightsteelblue;
-  stroke-width: 2px;
-  opacity: 0.5;
-
-}
-
-.node circle.unique{
-  fill: #fff;
-  stroke: #ffa500;
-  stroke-width: 1px;
-}
-
-.node text {
-  font: 12px sans-serif;
-}
-
-.node text.unique {
-  font-weight: bold;
-}
-
-.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 2px;
-}
-
 
 .table-model-list{
   .panel-heading>h3{
     cursor: pointer;
   }
+
+  .panel-body {
+    padding: 0;
+  }
+
   tbody tr{
     cursor: pointer;
+
   }
   tr.primary-key{
     .column-name{
@@ -88,4 +51,20 @@
       font-weight: bold;
     }
   }
+}
+
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th{
+  background-color: #FEE4B6;
+}
+
+.table > tbody > tr.active > td,
+.table > tbody > tr.active > th{
+  background-color: #FED88F;
+}
+
+.table-hover > tbody > tr.active:hover > td,
+.table-hover > tbody > tr:hover > .active,
+.table-hover > tbody > tr.active:hover > th {
+  background-color: #FECD72;
 }

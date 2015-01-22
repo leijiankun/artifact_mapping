@@ -49,7 +49,7 @@
 		},
 		{
 			"name":"申请人配偶信息",
-			"type" : "artifact" ,
+			"type" : "artifact_n" ,
 			"children": [
 			{
 				"name":"配偶ID",
