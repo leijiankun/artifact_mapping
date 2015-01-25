@@ -407,6 +407,7 @@ function deSelectAllNodes(){
 		.transition().duration(300)
 		.style("fill-opacity", 1e-6)
 		.attr("width", 0);
+	mapping_rules_manager.clear(); 
 }
 
 function visitAll(source, action, options) {

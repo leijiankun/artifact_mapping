@@ -22,49 +22,32 @@
   .container{
     max-width: 1400px;
     width: auto;
+    font-family: "Open Sans","Microsoft YaHei";
   }
 }
 
-
-.table-model-list{
-  .panel-heading>h3{
-    cursor: pointer;
-  }
-
-  .panel-body {
-    padding: 0;
-  }
-
-  tbody tr{
-    cursor: pointer;
-
-  }
-  tr.primary-key{
-    .column-name{
-      color: rgb(255, 165, 0);
-      font-weight: bold;
-    }
-  }
-  tr.foreign-key{
-    .column-name{
-      color: rgb(224, 102, 58);
-      font-weight: bold;
-    }
-  }
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), asset-url("cJZKeOuBrn4kERxqtaUH3VtXRa8TVwTICgirnJhmVJw.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
-.table-hover > tbody > tr:hover > td,
-.table-hover > tbody > tr:hover > th{
-  background-color: #FEE4B6;
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), asset-url("MTP_ySUJH_bn48VBG8sNSugdm0LZdjqr5-oayXSOefg.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
-.table > tbody > tr.active > td,
-.table > tbody > tr.active > th{
-  background-color: #FED88F;
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 800;
+  src: local('Open Sans Extrabold'), local('OpenSans-Extrabold'), asset-url("EInbV5DfGHOiMmvb1Xr-hugdm0LZdjqr5-oayXSOefg.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
-.table-hover > tbody > tr.active:hover > td,
-.table-hover > tbody > tr:hover > .active,
-.table-hover > tbody > tr.active:hover > th {
-  background-color: #FECD72;
-}
+

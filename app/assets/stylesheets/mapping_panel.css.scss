@@ -1,19 +1,28 @@
 .row#mapping_panel {
 	position: fixed;
 	bottom: 0px;
-	height: 150px;
-	padding-top: 35px;
-	vertical-align: center;
+	height: 130px;
+	padding-top: 0 px;
 	line-height: 120px;
-	background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 30%);
-	background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 30%);
-	width: 80%;
-	
+	//background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 30%);
+	//background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 30%);
+	background-color: rgba(252, 219, 170, 0.7);
+	display: block;
+	left: 0;
+	right: 0;
+
+	.col-sm-12{
+		margin: 0;
+		padding: 0;
+		background: rgb(245, 171, 53) asset-url("mp_shadow.png") repeat-x 0 0;
+	}
+
 	#map-button {
 		
 		a{
 			font-size: 18px;
-			font-family: Helvetica, Arial, sans-serif;;
+			font-family: "Open Sans";
+			font-weight: 800;
 			width: 120px;
 			cursor: pointer;
 			text-decoration: none;
@@ -36,11 +45,16 @@
 	svg {
 		text {
 			font-size: 2em;
-			
+			font-family: "Open Sans","Microsoft YaHei";
+			font-weight: 400;
+			stroke: none;
+			fill: rgb(255,255,255);
+			text-shadow: none;
+			alignment-baseline: middle;
 		}
 
-		circle.node {
-			fill: #fff;
+		circle {
+			fill: none;
 			stroke: #006699;
 			stroke-width: 2px;
 		}
@@ -73,6 +87,7 @@
 
 	 	.db_item table{
 	 		margin-bottom: 0;
+	 		background-color: #eeeeee;
 	 	}
 	}
 }

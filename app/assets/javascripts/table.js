@@ -24,6 +24,7 @@ function init_tables(data){
 
     $('.table-model-list .panel-heading>h3').bind('click',function(){
         $(this).parent().parent().find(".panel-body").slideToggle(400);
+        mapping_rules_manager.clear();
     });
 
     $('#table-model-list .panel-body').hide();
