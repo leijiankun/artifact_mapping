@@ -38,6 +38,7 @@ function init_tables(data){
             for(var t=0;t<table_data.length;t++){
                 if(table_data[t].table == tid){
                     var column_data = table_data[t].columns[column_index];
+                    column_data.index = column_index;
                     return  {
                                 table_comment: table_data[t].table_comment,
                                 column_data: column_data

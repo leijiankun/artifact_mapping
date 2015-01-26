@@ -387,8 +387,8 @@ function onNodeSelect(d) {
 		if(mapping_panel)
 			mapping_panel.updateArtifact(d);
 
-		if(d.mapped){ // draw mapping rule link to db table, huge project here
-
+		if(d.mapped){ 
+			mapping_rules_manager.addLinkByNode(d);
 
 		}
 

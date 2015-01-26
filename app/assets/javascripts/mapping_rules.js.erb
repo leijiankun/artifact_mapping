@@ -28,7 +28,7 @@ var MappingLink = function(node, db, rid){
 		var coord_g = d3.transform(node_g.attr("transform")).translate;
 		var coord_rect = [parseFloat(rect.attr("x")),parseFloat(rect.attr("y"))];
 		var coord_source = [
-				coord_g[0]+coord_rect[0]+parseFloat(rect.attr("width")),
+				coord_g[0]+coord_rect[0]+node.name.length*13,
 				coord_g[1]+coord_rect[1]+parseFloat(rect.attr("height"))/2					
 			];
 		
@@ -36,7 +36,7 @@ var MappingLink = function(node, db, rid){
 
 		//tight binding here, got to know "Table" component's DOM
 		
-		var tr = $(".table-model-list tr.active");
+		var tr = $(".table-model-list tr[table_id='"+db.table+"'][column_index='"+db.column.index+"']");
 		var target = {y:697,x:tr.position().top-3}; // -20 for svg root translate, +17 for tr height
 		
 		g = tree_rootnode
@@ -117,6 +117,20 @@ var mapping_rules_manager = new (function(){
 				mapping_rules_manager.showRules({emphasis:rid,isOpt:true});
 			});
 
+	};
+
+	this.addLinkByNode = function(node){
+		var rid = -1
+		for(var i=0;i<mapping_rules.length;i++){
+			if(mapping_rules[i].node.id == node.id){
+				rid = i;
+				break;
+			}
+		}
+		
+		if(rid<0)return;
+		console.log(mapping_rules[rid].db);
+		this.addLink(node, mapping_rules[rid].db, rid);
 	};
 
 	this.clear = function(){
