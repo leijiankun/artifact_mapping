@@ -71,6 +71,17 @@ class SqlParser
         end
       end
 
+      foreign_key = column[/foreign\skey\s[\(\w`\)]+/]
+      if foreign_key
+        foreign_key = foreign_key[/\([\w`]+\)/].gsub('(','').gsub(')','').gsub('`','')
+        attributes.each do |attribute| 
+          if attribute[:name] == foreign_key
+            attribute[:foreign_key] = true
+            break
+          end
+        end
+      end
+
     end
     
     table[:columns] = attributes
