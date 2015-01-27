@@ -24,6 +24,7 @@ function init_tables(data){
 
     $('.table-model-list .panel-heading>h3').bind('click',function(){
         $(this).parent().parent().find(".panel-body").slideToggle(400);
+        mapping_rules_manager.clear();
     });
 
     $('#table-model-list .panel-body').hide();
@@ -37,6 +38,7 @@ function init_tables(data){
             for(var t=0;t<table_data.length;t++){
                 if(table_data[t].table == tid){
                     var column_data = table_data[t].columns[column_index];
+                    column_data.index = column_index;
                     return  {
                                 table_comment: table_data[t].table_comment,
                                 column_data: column_data

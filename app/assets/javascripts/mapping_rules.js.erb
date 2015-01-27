@@ -1,14 +1,161 @@
+/*
+	tightly coupled here
+	has to know other components and their DOM
+*/
+
+
 var mapping_rules = [];
 
+var MappingLink = function(node, db, rid){
+	var g;
+	var circle;
+	var shadow;
+	var path;
+
+	this.remove = function(){
+		g.remove();
+	};
+
+	this.getSVGNode = function(){
+		return g;
+	};
+
+	//construct link svg
+	(function(){
+		var node_g = tree_rootnode.selectAll("g.node")
+			.select(function(dd){return dd.id==node.id?this:null;});
+		var rect = node_g.select("rect");
+		var coord_g = d3.transform(node_g.attr("transform")).translate;
+		var coord_rect = [parseFloat(rect.attr("x")),parseFloat(rect.attr("y"))];
+		var coord_source = [
+				coord_g[0]+coord_rect[0]+node.name.length*13,
+				coord_g[1]+coord_rect[1]+parseFloat(rect.attr("height"))/2					
+			];
+		
+		var source = {x:coord_source[1],y:coord_source[0]};
+
+		//tight binding here, got to know "Table" component's DOM
+		
+		var tr = $(".table-model-list tr[table_id='"+db.table+"'][column_index='"+db.column.index+"']");
+		var target = {y:697,x:tr.position().top-3}; // -20 for svg root translate, +17 for tr height
+		
+		g = tree_rootnode
+			.append("g")
+			.attr("class", "MappingLink")
+			.attr("transform", "translate("+source.y+","+source.x+")");
+		path = g
+			.append("path")
+			.attr("d", diagonal({
+				source:{x:0,y:0}, 
+				target:{
+					x:target.x-source.x,
+					y:target.y-source.y}
+				}))
+			.style("stroke","rgb(255,165,0)")
+			.style("stroke-width", 2)
+			.style("fill","none");
+		shadow = g
+			.append("circle")
+			.attr("class", "shadow")
+			.attr("cy", (target.x-source.x)/2)
+			.attr("cx", (target.y-source.y)/2)
+			.attr("r", "0px")
+			.style("fill", "rgba(255,165,0,0.3)")
+			.style("stroke","none");
+		circle = g
+			.append("circle")
+			.attr("class", "clickable")
+			.attr("cy", (target.x-source.x)/2)
+			.attr("cx", (target.y-source.y)/2)
+			.attr("r", "12px")
+			.style("fill", "rgb(255,165,0)")
+			.style("stroke","rgb(255,165,0)")
+			.style("stroke-width", 2)
+			.on("mouseover", function(){
+				d3
+					.select(this.parentNode)
+					.select("circle.shadow")
+					.transition()
+					.attr("r","30px");
+			})
+			.on("mouseout", function(){
+				d3
+					.select(this.parentNode)
+					.select("circle.shadow")
+					.transition()
+					.attr("r","0px");
+			})
+			;
+		
+		//text
+		g
+			.append("text")
+			.text(""+rid)
+			.attr({
+		      "alignment-baseline": "middle",
+		      "text-anchor": "middle",
+		      "y": (target.x-source.x)/2,
+		      "x": (target.y-source.y)/2,
+		      "pointer-events": "none"	      
+    		});
+	})();
+};
+
+/* 
+	mapping_rules_manager is supposed to register event handlers on arti-tree and table
+	to clear link at right timing. But hard coded in those components for now.
+*/
+var mapping_rules_manager = new (function(){
+	this.link = null;
+
+	this.addLink = function(node, db, rid){
+		this.link = new MappingLink(node, db, rid);
+		var g = this.link.getSVGNode();
+		g
+			.select("circle.clickable")
+			.on("click",function(){
+				mapping_rules_manager.showRules({emphasis:rid,isOpt:true});
+			});
+
+	};
+
+	this.addLinkByNode = function(node){
+		var rid = -1
+		for(var i=0;i<mapping_rules.length;i++){
+			if(mapping_rules[i].node.id == node.id){
+				rid = i;
+				break;
+			}
+		}
+		
+		if(rid<0)return;
+		console.log(mapping_rules[rid].db);
+		this.addLink(node, mapping_rules[rid].db, rid);
+	};
+
+	this.clear = function(){
+		if(this.link)
+			this.link.remove();
+	};
+
+	this.showRules = function(opt){
+		var html = "<ul>";
+		var emp = -1;
+		if(opt&&opt.isOpt)
+			emp = opt.emphasis;
+		for(var i=0;i<mapping_rules.length;i++){
+			html += 
+				"<li"+(i==emp?" class='emphasis'":"")+
+				"><p><span class='order'>"+i+"</span>"+
+				mapping_rules[i].rule_text+"</p></li>";
+		}
+		html+="</ul>";
+		$("#mapping-rules-modal .modal-body").html(html);
+		$("#mapping-rules-modal").modal();
+	};
+});
 
 
 $(document).ready(function(){
-	$("#menu-btn-rules").click(function(){
-		var html = "";
-		for(var i=0;i<mapping_rules.length;i++){
-			html +="<p>"+mapping_rules[i].rule_text+"</p>";
-		}
-		$("#mapping-rules-modal .modal-body").html(html);
-		$("#mapping-rules-modal").modal();
-	});
+	$("#menu-btn-rules").click(mapping_rules_manager.showRules);
 });

@@ -387,8 +387,8 @@ function onNodeSelect(d) {
 		if(mapping_panel)
 			mapping_panel.updateArtifact(d);
 
-		if(d.mapped){ // draw mapping rule link to db table, huge project here
-
+		if(d.mapped){ 
+			mapping_rules_manager.addLinkByNode(d);
 
 		}
 
@@ -407,6 +407,7 @@ function deSelectAllNodes(){
 		.transition().duration(300)
 		.style("fill-opacity", 1e-6)
 		.attr("width", 0);
+	mapping_rules_manager.clear(); 
 }
 
 function visitAll(source, action, options) {
