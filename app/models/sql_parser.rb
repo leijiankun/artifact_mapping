@@ -19,17 +19,17 @@ class SqlParser
   end
 
   def self.parse_create_table_sql(sql)
-    # parse table name
+    # Parse table name
     table_name = sql[/table\s[\w`]+/]
     return nil unless table_name
     table_name = table_name.split.last.gsub('`','')
     table = { table: table_name, table_comment: table_name }
 
-    # parse attributes
+    # Parse attributes
     attributes = []
     columns = sql.split ','
 
-    # parse table comment
+    # Parse table comment
     if columns.last.include? "comment="
       table[:table_comment] = columns.last[/comment=[\'\"][\W]+[\'\"]/].gsub("comment=",'').gsub("\'",'').gsub("\"", '')
     end
@@ -42,7 +42,7 @@ class SqlParser
         if attribute 
           attribute[:name] = arr[count-1].gsub('`','')
 
-          # parse column comment
+          # Parse column comment
           i = count 
           while i < arr.size - 1
             if arr[i] == 'comment'
@@ -59,7 +59,7 @@ class SqlParser
         count = count + 1
       end
 
-      # primary key
+      # Parse primary keys
       primary_key = column[/primary\skey\s[\(\w`\)]+/]
       if primary_key
         primary_key = primary_key[/\([\w`]+\)/].gsub('(','').gsub(')','').gsub('`','')
@@ -71,12 +71,24 @@ class SqlParser
         end
       end
 
+      # Parse foreign keys
+      # SQL example: CONSTRAINT `tpg)gsfsqspb_ibfk_2` FOREIGN KEY (`POID`) REFERENCES `tpg)ryxx` (`ID`)
       foreign_key = column[/foreign\skey\s[\(\w`\)]+/]
       if foreign_key
         foreign_key = foreign_key[/\([\w`]+\)/].gsub('(','').gsub(')','').gsub('`','')
         attributes.each do |attribute| 
           if attribute[:name] == foreign_key
             attribute[:foreign_key] = true
+            attribute[:reference] = {}
+            count = 0
+            words = column.split
+            words.each do |w|
+              if w == 'references'
+                attribute[:reference][:table] = words[count+1].gsub('`','')
+                attribute[:reference][:column] = words[count+2].gsub('(','').gsub(')','').gsub('`','')
+              end
+              count = count + 1
+            end
             break
           end
         end
