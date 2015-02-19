@@ -87,6 +87,7 @@ function update(source) {
 	keyNodes
 		.append("use")
 		.attr("xlink:href", "<%= asset_path('key_node.svg')%>#key_node")
+		.attr("externalResourcesRequired","true")
 		.attr("y", -10)
 		.attr("x", -12)
 		.attr("transform", "scale(0,0)");

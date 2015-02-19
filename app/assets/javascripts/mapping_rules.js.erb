@@ -28,7 +28,7 @@ var MappingLink = function(node, db, rid){
 		var coord_g = d3.transform(node_g.attr("transform")).translate;
 		var coord_rect = [parseFloat(rect.attr("x")),parseFloat(rect.attr("y"))];
 		var coord_source = [
-				coord_g[0]+coord_rect[0]+node.name.length*13,
+				coord_g[0]+coord_rect[0]+node.name.length*13+13,
 				coord_g[1]+coord_rect[1]+parseFloat(rect.attr("height"))/2					
 			];
 		
@@ -109,6 +109,7 @@ var mapping_rules_manager = new (function(){
 	this.link = null;
 
 	this.addLink = function(node, db, rid){
+		this.clear();
 		this.link = new MappingLink(node, db, rid);
 		var g = this.link.getSVGNode();
 		g
