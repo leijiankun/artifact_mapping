@@ -121,17 +121,53 @@ var mapping_rules_manager = new (function(){
 	};
 
 	this.addLinkByNode = function(node){
-		var rid = -1
-		for(var i=0;i<mapping_rules.length;i++){
-			if(mapping_rules[i].node.id == node.id){
-				rid = i;
-				break;
+		var rid = -1;
+		console.log(node);
+		//key nodes do not link to a rule itself
+		if(node.type=="key" && node.depth>1){ 
+			for(var i=0;i<mapping_rules.length;i++){
+				if(mapping_rules[i].node.id == node.parent.id){
+					rid = i;
+					break;
+				}
 			}
+			if(rid<0)return;
+			open_table(node.mr.table);
+			var getTableIndex = function(t){
+				for(var i=0;i<table_data.length;i++){
+					if(table_data[i].table == t)
+						return i;
+				}
+				return -1;
+			};
+			var getColumnIndex = function(c, t){
+				for(var i=0;i<t.columns.length;i++){
+					if(t.columns[i].name == c)
+						return i;
+				}
+				return -1;
+			};
+			var db = {
+				table: node.mr.table,
+				column: {
+					name: node.mr.column,
+					index: getColumnIndex(node.mr.column,table_data[getTableIndex(node.mr.table)])
+				}
+			};
+			this.addLink(node, db, rid);		
+		}else{
+			for(var i=0;i<mapping_rules.length;i++){
+				if(mapping_rules[i].node.id == node.id){
+					rid = i;
+					break;
+				}
+			}
+
+			if(rid<0)return;
+			
+			open_table(mapping_rules[rid].db.table);
+			this.addLink(node, mapping_rules[rid].db, rid);
 		}
-		
-		if(rid<0)return;
-		console.log(mapping_rules[rid].db);
-		this.addLink(node, mapping_rules[rid].db, rid);
 	};
 
 	this.clear = function(){

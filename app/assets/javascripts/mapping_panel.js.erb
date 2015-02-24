@@ -94,31 +94,75 @@ var mapping_panel = new (function(){
 		var p = findParentArtifact(node);
 		var rule = {};
 		if(node.type == "key"){
-			p.mapped = true;
-			p.mr = {
-				table: db.table,
-				key: node
-			};
+			if(!findParentArtifact(p)){ 
+				p.mapped = true;
+				p.mr = {
+					table: db.table
+				};
+				node.mapped = true;
+				node.mr = {
+					table: db.table,
+					column: db.column.name
+				};
+				rule = {
+					node: node,
+					parent_artifact: p,
+					db: db,
+					rule_text: 	"[key]"+p.name+"."+node.name+"@"+
+								db.table+"."+db.column.name+""
+				};
+			}
+		}else if(node.type=="other"){
 			node.mapped = true;
 			node.mr = db;
 			rule = {
 				node: node,
 				parent_artifact: p,
 				db: db,
-				rule_text: 	"[key]"+p.name+"."+node.name+"@"+
-							db.table+"("+db.column.name+")"
+				rule_text: 	"[attribute]"+p.name+"(key="+findArtifactKeyNode(p).name+")."+node.name+"@"+
+							p.mr.table+"(PK="+findArtifactKeyNode(p).mr.column+")."+db.column.name
+			};
+		}else if(node.type=="artifact"){
+			node.mapped = true;
+			node.mr = {
+				table: db.column.reference.table,
+				fk:	db
+			};
+			var key = findArtifactKeyNode(node);
+			key.mapped = true;
+			key.mr = db.column.reference;
+
+			rule = {
+				node: node,
+				parent_artifact: p,
+				db: db,
+				rule_text: 	"[artifact 1-1]"+p.name+"."+findArtifactKeyNode(p).name+"->"+
+							node.name+"."+findArtifactKeyNode(node).name+"@"+
+							db.table+"."+db.column.name+"->"+
+							db.column.reference.table+"."+db.column.reference.column
+			}
+		}else if(node.type=="artifact_n"){
+			node.mapped = true;
+			node.mr = {
+				table: db.table,
+				fk:	db
+			};
+			var key = findArtifactKeyNode(node);
+			key.mapped = true;
+			key.mr = {
+				table: db.table,
+				column: db.column.name
 			};
 
-		}else if(!node.type){
-			node.mapped = true;
-			node.mr = db;
 			rule = {
 				node: node,
 				parent_artifact: p,
 				db: db,
-				rule_text: 	"[attribute]"+node.name+"."+p.name+"."+p.mr.key.name+"@"+
-							p.mr.table+"("+p.mr.key.mr.column.name+")."+db.column.name
-			};
+				rule_text: 	"[artifact 1-n]"+p.name+"."+findArtifactKeyNode(p).name+"->"+
+							node.name+"."+findArtifactKeyNode(node).name+"@"+
+							db.table+"."+db.column.name+"<-"+
+							db.column.reference.table+"."+db.column.reference.column
+			}
 		}
 
 		
@@ -137,9 +181,10 @@ var mapping_panel = new (function(){
 		}
 
 		//draw the link between arti-tree node to table item
-
 		mapping_rules_manager.addLink(node, db, rid);
 
+		//update TREE, modify later
+		update(root);
 	}
 
 	var getTableIndex = function(t){
@@ -167,6 +212,23 @@ var mapping_panel = new (function(){
 		return -1;
 	}
 
+	var findArtifactKeyNode = function(d){
+		var c = null;
+		if(d.children){
+			c = d.children;
+		}else if(d._children){
+			c = d._children;
+		}else{
+			return null;
+		}
+
+		for(var i=0;i<c.length;i++){
+			if(c[i].type=="key")
+				return c[i];
+		}
+
+		return null;
+	}
 
 	var findParentArtifact = function(d){
 		var p = d.parent;
@@ -179,13 +241,14 @@ var mapping_panel = new (function(){
 	};
 
 	this.checkIfMappable = function(node, db){
-		/*	two major type of node here:
-				1 artifact			
+		/*	3 major types of node here:
+				1 artifact 1-1		
 				2 key/attribute
-			
+				3 artifact 1-n
 		*/
-		console.log(db);
-		
+		console.log("db:",db);
+		console.log("node:",node);
+
 		if(node.parent) {		//not root?
 			var p = findParentArtifact(node);
 			if(node.type == "key"){		//id?
@@ -197,19 +260,29 @@ var mapping_panel = new (function(){
 						return false;
 					// TODO: check if db has foreign key to its parent
 
-					return true;
+					return false;
 				}else {		// main artifact
 					if(!db.column.primary_key)
 						return false;
 					return true;
 				}
 			}else if (node.type == "artifact"){
-				// TODO: 
-				return false;
+				if(!db.column.foreign_key)
+					return false;
+				if(!p.mapped)
+					return false;
+				if(p.mr.table!=db.table) 
+					return false;
+				return true;
 			}else if (node.type == "artifact_n"){
-				// TODO:
-				return false;
-			}else {	//attribute node
+				if(!db.column.foreign_key)
+					return false;
+				if(!p.mapped)
+					return false;
+				if(p.mr.table!=db.column.reference.table) 
+					return false;
+				return true;
+			}else if(node.type == "other"){	//attribute node
 				if(!p.mapped)
 					return false;
 				if(p.mr.table!=db.table) // must map into same table 
@@ -217,7 +290,7 @@ var mapping_panel = new (function(){
 				return true;
 			}
 		}else {
-			return false; //ignore artifact node for now
+			return false; //ignore root
 		}
 
 		return false; 
