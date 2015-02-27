@@ -20,9 +20,16 @@
     }
   }
   tr.foreign-key{
+    position: relative;
+
     .column-name{
       color: rgb(224, 102, 58);
       font-weight: bold;
+    }
+
+    .tip{
+      position: absolute;
+      right: 100%;
     }
   }
 

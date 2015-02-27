@@ -45,14 +45,20 @@ $(document).ready(function(){
 			.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-		update(root);
-
 		visitAll(root, 
 			function(node, options){
+				if(node.type){
+
+				}else {
+					node.type = "other";
+				}
 				node.artifact = options.parent_artifact?options.parent_artifact: null;
 				return node.type&&node.type=="artifact"?{parent_artifact:node}:options;
 			},
 			{parent_artifact:null});
+
+		update(root);
+
 
 	});
 });
@@ -86,7 +92,9 @@ function update(source) {
 
 	keyNodes
 		.append("use")
+		.attr("class","icon")
 		.attr("xlink:href", "<%= asset_path('key_node.svg')%>#key_node")
+		.attr("externalResourcesRequired","true")
 		.attr("y", -10)
 		.attr("x", -12)
 		.attr("transform", "scale(0,0)");
@@ -111,7 +119,13 @@ function update(source) {
 		.attr("text-anchor", "start")
 		.text(function(d) { return d.name; })
 		.style("fill-opacity", 1e-6);
-
+	keyNodes
+		.append("use")
+		.attr("class","map_token")
+		.attr("xlink:href", "<%= asset_path('accept_0.svg')%>#accept")
+		.attr("y", 0)
+		.attr("x", -10)
+		.attr("transform", "scale(0,0)");
 
 //		<rect x="50" y="20" rx="20" ry="20" width="150" height="150" style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9"/>
 
@@ -121,6 +135,7 @@ function update(source) {
 		.on("click", onNodeUpdate);
 	groupNodes
 		.append("use")
+		.attr("class","icon")
 		.attr("xlink:href", "<%= asset_path('group_node.svg')%>#group_node")
 		.attr("y", -10)
 		.attr("x", -12)
@@ -138,6 +153,7 @@ function update(source) {
 	var artifactNodes = nodeEnter.select(function(d){ return d.type&&d.type=="artifact"? this: null;});
 	artifactNodes
 		.append("use")
+		.attr("class","icon")
 		.attr("xlink:href", "<%= asset_path('artifact_node.svg')%>#artifact_node")
 		.attr("y", -10)
 		.attr("x", -12)
@@ -165,11 +181,19 @@ function update(source) {
 		.text(function(d) { return d.name; })
 		.style("fill-opacity", 1e-6)
 		.on("click", onNodeSelect);
+	artifactNodes	
+		.append("use")
+		.attr("class","map_token")
+		.attr("xlink:href", "<%= asset_path('accept_0.svg')%>#accept")
+		.attr("y", 0)
+		.attr("x", -10)
+		.attr("transform", "scale(0,0)");
 
 	//artifact
 	var artifactnNodes = nodeEnter.select(function(d){ return d.type&&d.type=="artifact_n"? this: null;});
 	artifactnNodes
 		.append("use")
+		.attr("class","icon")
 		.attr("xlink:href", "<%= asset_path('artifact_n_node.svg')%>#artifact_n_node")
 		.attr("y", -10)
 		.attr("x", -12)
@@ -197,11 +221,18 @@ function update(source) {
 		.text(function(d) { return d.name; })
 		.style("fill-opacity", 1e-6)
 		.on("click", onNodeSelect);
+	artifactnNodes	
+		.append("use")
+		.attr("class","map_token")
+		.attr("xlink:href", "<%= asset_path('accept_0.svg')%>#accept")
+		.attr("y", 0)
+		.attr("x", -10)
+		.attr("transform", "scale(0,0)");
 
 
 	//Ò»°ãnode
 
-	var otherNodes = 	nodeEnter.select(function(d){ return d.type? null: this;});
+	var otherNodes = 	nodeEnter.select(function(d){ return d.type&&d.type=="other"? this: null;});
 	otherNodes
 		.on("click", onNodeSelect);
 	otherNodes
@@ -222,12 +253,20 @@ function update(source) {
 		.attr("class", "link_anchor")
 		.attr("r", 1e-6);
 
-	otherNodes.append("text")
+	otherNodes
+		.append("text")
 		.attr("x", 13)
 		.attr("dy", ".35em")
 		.attr("text-anchor", "start")
 		.text(function(d) { return d.name; })
 		.style("fill-opacity", 1e-6);
+	otherNodes	
+		.append("use")
+		.attr("class","map_token")
+		.attr("xlink:href", "<%= asset_path('accept_0.svg')%>#accept")
+		.attr("y", -10)
+		.attr("x", -14)
+		.attr("transform", "scale(0,0)");
 
 
 	
@@ -240,11 +279,18 @@ function update(source) {
 	nodeUpdate.select(function(d){ 
 			return d.type&&(d.type=="key"||d.type=="group"||d.type=="artifact"||d.type=="artifact_n")? this: null;
 		})
-		.select("use")
+		.select("use.icon")
 		.attr("transform","scale(1, 1)");
+	nodeUpdate.select(function(d){ 
+			return d.type&&(d.type=="key"||d.type=="other"||d.type=="artifact"||d.type=="artifact_n")&&d.mapped? this: null;
+		})
+		.select("use.map_token")
+		.attr("transform","scale(0.5, 0.5)");
+
+
 		
 	//Ò»°ãnode
-	nodeUpdate.select(function(d){ return d.type? null: this;})
+	nodeUpdate.select(function(d){ return d.type=="other"? this:null ;})
 		.select("circle")
 		.attr("r", 10);
 	//select box
@@ -268,7 +314,7 @@ function update(source) {
 		.attr("transform","scale(0, 0)");
 		
 	//Ò»°ãnode
-	nodeExit.select(function(d){ return d.type? null: this;})
+	nodeExit.select(function(d){ return d.type=="other"? this:null ;})
 		.select("circle")
 		.attr("r", 1e-6);
 	//select box
@@ -317,13 +363,13 @@ function update(source) {
 
 // Toggle children on click.
 function onNodeUpdate(d) {
-  if (d.children) {
+	if (d.children) {
 	d._children = d.children;
 	d.children = null;
-  } else if(d._children){
+	} else if(d._children){
 	d.children = d._children;
 	d._children = null;
-  } 
+	} 
 
 	if(d!=root)update(d);
 	var origin_size = tree.size();
@@ -334,7 +380,7 @@ function onNodeUpdate(d) {
 	treeData[0].y0 = 0;
 	  
 	update(d);
-
+	deSelectAllNodes();
 }
 
 function getVisibleLeaveCount(source){
