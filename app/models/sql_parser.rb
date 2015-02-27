@@ -25,16 +25,29 @@ class SqlParser
     table_name = table_name.split.last.gsub('`','')
     table = { table: table_name, table_comment: table_name }
 
+    @tables ||= {}
+    @tables[table_name] = table 
+
+
+    # Scan all strings that match a pattern like '(`word`,`word`)'
+    tmps = sql.scan(/\([\w`\s]+,[\w`\s]+\)/)
+    sql = sql.gsub(/\([\w`\s]+,[\w`\s]+\)/, '_..._')
+
     # Parse attributes
     attributes = []
     columns = sql.split ','
+    # columns = sql.split "\n"
 
     # Parse table comment
     if columns.last.include? "comment="
       table[:table_comment] = columns.last[/comment=[\'\"][\W]+[\'\"]/].gsub("comment=",'').gsub("\'",'').gsub("\"", '')
     end
 
+    count_tmps = -1
     columns.each do |column|
+      
+      column = column.gsub('_..._'){ |t| t = tmps[count_tmps=count_tmps+1]}
+
       arr = column.split
       count = 0
       arr.each do |e|
@@ -72,26 +85,46 @@ class SqlParser
       end
 
       # Parse foreign keys
-      # SQL example: CONSTRAINT `tpg)gsfsqspb_ibfk_2` FOREIGN KEY (`POID`) REFERENCES `tpg)ryxx` (`ID`)
-      foreign_key = column[/foreign\skey\s[\(\w`\)]+/]
+      # SQL example: CONSTRAINT `gsfsqspb_ibfk_2` FOREIGN KEY (`POID`) REFERENCES `ryxx` (`ID`)
+      # SQL example2: CONSTRAINT `gsfsqspb_ibfk_2` FOREIGN KEY (`POID`,`TITLE`) REFERENCES `ryxx` (`ID`,`TITLE`)
+
+      foreign_key = column[/foreign\skey\s\([\w`,\s]+\)/]
       if foreign_key
-        foreign_key = foreign_key[/\([\w`]+\)/].gsub('(','').gsub(')','').gsub('`','')
-        attributes.each do |attribute| 
-          if attribute[:name] == foreign_key
-            attribute[:foreign_key] = true
-            attribute[:reference] = {}
-            count = 0
-            words = column.split
-            words.each do |w|
-              if w == 'references'
-                attribute[:reference][:table] = words[count+1].gsub('`','')
-                attribute[:reference][:column] = words[count+2].gsub('(','').gsub(')','').gsub('`','')
+
+        foreign_key = foreign_key.gsub(/\s/, '')
+
+        foreign_keys = foreign_key[/\([\w`\,]+\)/].gsub('(','').gsub(')','').gsub('`','')
+        foreign_keys = foreign_keys.split(',')
+
+        foreign_keys.each do |key|
+          attributes.each do |attribute| 
+            if attribute[:name] == key
+              attribute[:foreign_key] = true
+              attribute[:reference] ||= []
+
+              reference = {}
+              count = 0
+              words = column.split
+              words.each do |w|
+                if w == 'references'
+                  reference[:table] = words[count+1].gsub('`','')
+                  reference[:fks] = foreign_keys
+                  reference[:columns] = words[count+2].gsub('(','').gsub(')','').gsub('`','').split(',')
+                  reference[:table_comment] = @tables[reference[:table]][:table_comment]
+                end
+                count = count + 1
               end
-              count = count + 1
+
+              attribute[:reference].push reference
+
+              break
             end
-            break
           end
+
         end
+
+        
+
       end
 
     end
