@@ -18,15 +18,33 @@ class SqlParser
     nil
   end
 
-  def self.parse_create_table_sql(sql)
-    # Parse table name
+  def self.parse_table_comments(sql)
     table_name = sql[/table\s[\w`]+/]
     return nil unless table_name
     table_name = table_name.split.last.gsub('`','')
     table = { table: table_name, table_comment: table_name }
 
-    @tables ||= {}
-    @tables[table_name] = table 
+    columns = sql.split ','
+
+    # Parse table comment
+    if columns.last.include? "comment="
+      table[:table_comment] = columns.last[/comment=[\'\"][\W]+[\'\"]/].gsub("comment=",'').gsub("\'",'').gsub("\"", '')
+    end
+
+    table
+  end
+
+  def self.parse_create_table_sql(sql)
+    # Parse table name
+    table_name = sql[/table\s[\w`]+/]
+    return nil unless table_name
+    table_name = table_name.split.last.gsub('`','')
+    table = @tables[table_name]
+
+    # table = { table: table_name, table_comment: table_name }
+
+    # @tables ||= {}
+    # @tables[table_name] = table 
 
 
     # Scan all strings that match a pattern like '(`word`,`word`)'
@@ -39,9 +57,9 @@ class SqlParser
     # columns = sql.split "\n"
 
     # Parse table comment
-    if columns.last.include? "comment="
-      table[:table_comment] = columns.last[/comment=[\'\"][\W]+[\'\"]/].gsub("comment=",'').gsub("\'",'').gsub("\"", '')
-    end
+    # if columns.last.include? "comment="
+    #   table[:table_comment] = columns.last[/comment=[\'\"][\W]+[\'\"]/].gsub("comment=",'').gsub("\'",'').gsub("\"", '')
+    # end
 
     count_tmps = -1
     columns.each do |column|
@@ -136,6 +154,16 @@ class SqlParser
   def self.parse_sql_contents(sql_contents)
     tables = []
     sqls = sql_contents.split ';'
+    @tables = {}
+    sqls.each do |sql|
+      sql = sql.downcase 
+      if sql.include? 'create table'
+        table = parse_table_comments sql 
+        @tables[table[:table]] = table 
+      end
+    end
+
+
     sqls.each do |sql|
       sql = sql.downcase
       if sql.include? 'create table'
