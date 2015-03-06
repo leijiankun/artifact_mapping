@@ -195,10 +195,18 @@ var mapping_rules_manager = new (function(){
 		function omitArtifactParent(k, v){
 			if(k=="artifact"||k=="parent"){
 				return "";
+			}else{
+				if (v && typeof v === 'object' ) {
+					var replacement = {};
+					if (Object.hasOwnProperty.call(v, "_children")) {
+						replacement["children"] = v["_children"]?v["_children"]:(v["children"]?v["children"]:[]);
+						return replacement;
+					}
+				}
 			}
 			return v;
 		}
-		console.log(JSON.stringify(treeData,omitArtifactParent,"\t"))
+		
 		$.ajax({
 			url: "/get_sega_instance.json",
 			type: "post",
