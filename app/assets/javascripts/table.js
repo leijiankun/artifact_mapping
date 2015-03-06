@@ -90,6 +90,15 @@ function generate_table(json){
   html += '<table class="table table-hover table-bordered table-stripped">';
   html += '<thead><tr><th>名称</th><th>类型</th><th>说明</th></tr></thead>';
   html += '<tbody>'
+
+  function getReferenceString(refs){
+    var rs = "";
+    for(var ref in refs){
+        rs += "["+refs[ref].table_comment+" "+refs[ref].table + "]";
+    }
+    return rs;
+  }
+
   for(var i=0;i<json.columns.length;i++){
     tr_class = json.columns[i].primary_key ? 'primary-key' : '';
     tr_class += json.columns[i].foreign_key ? 'foreign-key' : '';
@@ -97,7 +106,7 @@ function generate_table(json){
     html += '<tr class="'+ tr_class +'" column_index='+ i +' table_id = "'+ json.table +'">';
     
     if(json.columns[i].foreign_key){
-        html += '<td class="column-name"><span class="hint--left" data-hint="'+json.columns[i].reference.table+'">'+json.columns[i].name + '</span></td>';
+        html += '<td class="column-name"><span class="hint--left" data-hint="'+getReferenceString(json.columns[i].reference)+'">'+json.columns[i].name + '</span></td>';
     }else{
         html += '<td class="column-name">'+json.columns[i].name +'</td>';    
     }

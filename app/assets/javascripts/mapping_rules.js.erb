@@ -190,9 +190,29 @@ var mapping_rules_manager = new (function(){
 		$("#mapping-rules-modal .modal-body").html(html);
 		$("#mapping-rules-modal").modal();
 	};
+
+	this.db_to_sega = function(){
+		function omitArtifactParent(k, v){
+			if(k=="artifact"||k=="parent"){
+				return "";
+			}
+			return v;
+		}
+		
+		$.ajax({
+			url: "/get_sega_instance.json",
+			type: "post",
+			data: JSON.stringify(treeData,omitArtifactParent,"\t"),
+			success: function(r){
+				console.log(r);
+			}
+		});
+
+	};
 });
 
 
 $(document).ready(function(){
 	$("#menu-btn-rules").click(mapping_rules_manager.showRules);
+	$("#menu-btn-db2sega").click(mapping_rules_manager.db_to_sega);
 });

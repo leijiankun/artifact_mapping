@@ -125,13 +125,14 @@ var mapping_panel = new (function(){
 		}else if(node.type=="artifact"){
 			node.mapped = true;
 			node.mr = {
-				table: db.column.reference.table,
+				table: db.column.reference[0].table,
 				fk:	db
 			};
 			var key = findArtifactKeyNode(node);
 			key.mapped = true;
-			key.mr = db.column.reference;
-
+			key.mr = db.column.reference[0];
+			key.mr.column = key.mr.columns[0]; // to fix
+			console.log("db",db);
 			rule = {
 				node: node,
 				parent_artifact: p,
@@ -139,7 +140,7 @@ var mapping_panel = new (function(){
 				rule_text: 	"[artifact 1-1]"+p.name+"."+findArtifactKeyNode(p).name+"->"+
 							node.name+"."+findArtifactKeyNode(node).name+"@"+
 							db.table+"."+db.column.name+"->"+
-							db.column.reference.table+"."+db.column.reference.column
+							db.column.reference[0].table+"."+db.column.reference[0].columns[0] 
 			}
 		}else if(node.type=="artifact_n"){
 			node.mapped = true;
@@ -161,7 +162,7 @@ var mapping_panel = new (function(){
 				rule_text: 	"[artifact 1-n]"+p.name+"."+findArtifactKeyNode(p).name+"->"+
 							node.name+"."+findArtifactKeyNode(node).name+"@"+
 							db.table+"."+db.column.name+"<-"+
-							db.column.reference.table+"."+db.column.reference.column
+							db.column.reference[0].table+"."+db.column.reference[0].columns[0]
 			}
 		}
 
@@ -279,7 +280,7 @@ var mapping_panel = new (function(){
 					return false;
 				if(!p.mapped)
 					return false;
-				if(p.mr.table!=db.column.reference.table) 
+				if(p.mr.table!=db.column.reference[0].table) 
 					return false;
 				return true;
 			}else if(node.type == "other"){	//attribute node
