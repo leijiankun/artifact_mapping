@@ -198,11 +198,11 @@ var mapping_rules_manager = new (function(){
 			}
 			return v;
 		}
-		
+		console.log(JSON.stringify(treeData,omitArtifactParent,"\t"))
 		$.ajax({
 			url: "/get_sega_instance.json",
 			type: "post",
-			data: JSON.stringify(treeData,omitArtifactParent,"\t"),
+			data: {artifact_tree: JSON.stringify(treeData,omitArtifactParent,"\t")},
 			success: function(r){
 				console.log(r);
 			}
