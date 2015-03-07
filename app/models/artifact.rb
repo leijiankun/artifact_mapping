@@ -78,15 +78,15 @@ class Artifact
     return {} unless row.present?
 
     result = { }
-    result["sql"] = "SELECT #{artifact_table}.* FROM #{artifact_table} WHERE #{primary_key} = '#{key}'"
-    result[primary_key] = row[primary_key.upcase]
+    result["SQL"] = "SELECT #{artifact_table}.* FROM #{artifact_table} WHERE #{primary_key} = '#{key}'"
+    result[key_node["name"]] = row[primary_key.upcase]
 
     artifact_tree["children"].each do |attribute|
       # attribute
       if attribute["type"] == "other" and attribute["mapped"]
         # result[attribute["type"]] = row[attribute["type"].upcase]
         attr_name = attribute["mr"]["column"]["name"]
-        result[attr_name] = row[attr_name.upcase]
+        result[attribute["name"]] = row[attr_name.upcase]
       end
 
       # 1-1 mapping
