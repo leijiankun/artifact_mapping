@@ -105,7 +105,7 @@ class Artifact
         reference_key_value = row[reference_key.upcase]
 
         # Recrusively get all artifact attributes
-        a = { "name" => attribute["name"], fk_table => self.get_one(attribute, reference_key_value) }
+        a = { "name" => attribute["name"], reference_key => reference_key_value, fk_table => self.get_one(attribute, reference_key_value) }
         result["attributes"].push a
       end
 
