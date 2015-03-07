@@ -79,14 +79,20 @@ class Artifact
 
     result = { }
     result["SQL"] = "SELECT #{artifact_table}.* FROM #{artifact_table} WHERE #{primary_key} = '#{key}'"
-    result[key_node["name"]] = row[primary_key.upcase]
+
+    result["attributes"] = []
+    a = {primary_key => row[primary_key.upcase], "name" => key_node["name"]}
+    result["attributes"].push a
+    
 
     artifact_tree["children"].each do |attribute|
       # attribute
       if attribute["type"] == "other" and attribute["mapped"]
         # result[attribute["type"]] = row[attribute["type"].upcase]
         attr_name = attribute["mr"]["column"]["name"]
-        result[attribute["name"]] = row[attr_name.upcase]
+        # result[attribute["name"]] = row[attr_name.upcase]
+        attr_value = { attr_name => row[attr_name.upcase], "name" => attribute["name"] }
+        result["attributes"].push attr_value
       end
 
       # 1-1 mapping
@@ -99,7 +105,8 @@ class Artifact
         reference_key_value = row[reference_key.upcase]
 
         # Recrusively get all artifact attributes
-        result[fk_table] = self.get_one attribute, reference_key_value
+        a = { "name" => attribute["name"], fk_table => self.get_one(attribute, reference_key_value) }
+        result["attributes"].push a
       end
 
     end
