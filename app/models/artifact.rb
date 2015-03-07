@@ -34,6 +34,10 @@ class Artifact
     result.empty? ? nil : result[0]
   end
 
+  def self.select_sql(table_name, key, key_value, limit)
+    "SELECT #{table_name}.* FROM #{table_name} WHERE #{key} = '#{key}' LIMIT #{limit}"
+  end
+
   def self.get_key_node(artifact_tree)
     key_node = nil
     artifact_tree["children"].each do |node|
@@ -67,35 +71,32 @@ class Artifact
     results
   end
 
-  def self.get_one(artifact_tree, key)
+  def self.get_one(artifact_tree, key_value)
     key_node = self.get_key_node artifact_tree
     return {} unless key_node.present?
 
-    primary_key = key_node["mr"]["column"]
-    artifact_table = key_node["mr"]["table"]
+    key = key_node["mr"]["column"]
+    table = key_node["mr"]["table"]
 
-    row = self.get_row artifact_table, primary_key, key 
+    row = self.get_row table, key, key_value 
     return {} unless row.present?
 
-    result = { }
-    result["SQL"] = "SELECT #{artifact_table}.* FROM #{artifact_table} WHERE #{primary_key} = '#{key}'"
+    result = { 
+      "attributes" => [], 
+      "sql"=> self.select_sql(table, key, key_value, 1) 
+    }
 
-    result["attributes"] = []
-    a = {primary_key => row[primary_key.upcase], "name" => key_node["name"]}
-    result["attributes"].push a
+    result["attributes"].push({key => row[key.upcase], "name" => key_node["name"]})
     
 
     artifact_tree["children"].each do |attribute|
       # attribute
       if attribute["type"] == "other" and attribute["mapped"]
-        # result[attribute["type"]] = row[attribute["type"].upcase]
-        attr_name = attribute["mr"]["column"]["name"]
-        # result[attribute["name"]] = row[attr_name.upcase]
-        attr_value = { attr_name => row[attr_name.upcase], "name" => attribute["name"] }
-        result["attributes"].push attr_value
+        name = attribute["mr"]["column"]["name"]
+        result["attributes"].push({ name => row[name.upcase], "name" => attribute["name"] })
       end
 
-      # 1-1 mapping
+      # artifact, 1-1 mapping
       if attribute["type"] == "artifact" and attribute["mapped"]
         fk_table = attribute["mr"]["table"]
         fk_key = attribute["mr"]["fk"]["column"]["reference"].first["column"]
@@ -105,8 +106,12 @@ class Artifact
         reference_key_value = row[reference_key.upcase]
 
         # Recrusively get all artifact attributes
-        a = { "name" => attribute["name"], reference_key => reference_key_value, fk_table => self.get_one(attribute, reference_key_value) }
-        result["attributes"].push a
+        artifact = { 
+          "name" => attribute["name"], 
+          reference_key => reference_key_value, 
+          fk_table => self.get_one(attribute, reference_key_value) 
+        }
+        result["attributes"].push artifact
       end
 
     end
