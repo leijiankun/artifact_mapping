@@ -45,11 +45,57 @@
 			},
 			{
 				"name":"申请人工作单位名称"
-			}]
+			},
+			{
+				"name":"直系亲属",
+				"type":"artifact_n",
+				"children": [
+					{
+						"name": "ID"
+					},
+					{
+						"name": "CODE"
+					},
+					{
+						"name": "申请人 ID"
+					},
+					{
+						"name": "与申请人关系"
+					},
+					{
+						"name": "身份证号"
+					},
+					{
+						"name": "姓名"
+					},
+					{
+						"name": "性别"
+					},
+					{
+						"name": "联系电话"
+					},
+					{
+						"name": "备注"
+					},
+					{
+						"name": "历史标志"
+					},
+					{
+						"name": "证件类别"
+					},
+					{
+						"name": "房屋坐落"
+					},
+					{
+						"name": "建筑面积"
+					}
+				]
+			}
+			]
 		},
 		{
 			"name":"申请人配偶信息",
-			"type" : "artifact_n" ,
+			"type" : "artifact" ,
 			"children": [
 			{
 				"name":"配偶ID",
@@ -119,6 +165,30 @@
 				"name":"困难证件有效期至"
 			}]
 		},
+		{
+			"name" : "申请合租关系",
+			"type" : "artifact_n",
+			"children":[
+				{
+					"name":"ID"
+				},
+				{
+					"name":"审批表 ID"
+				},
+				{
+					"name":"审批表 CODE"
+				},
+				{
+					"name":"保障类型"
+				},
+				{
+					"name":"合租编号"
+				},
+				{
+					"name":"是否合租"
+				}
+			]
+			},
 		{
 			"name":"其他信息",
 			"type" : "group" ,
