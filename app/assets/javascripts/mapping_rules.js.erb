@@ -213,7 +213,7 @@ var mapping_rules_manager = new (function(){
 			data: {artifact_tree: JSON.stringify(treeData,omitArtifactParent,"\t")},
 			success: function(r){
 				console.log(JSON.stringify(r));
-				$("#db-sega-modal .modal-body").html("<p>"+JSON.stringify(r)+"</p>");
+				$("#db-sega-modal .modal-body").html("<pre>"+JSON.stringify(r, null, 4)+"</pre>");
 				$("#db-sega-modal").modal();
 			}
 		});
