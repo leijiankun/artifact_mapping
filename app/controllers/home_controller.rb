@@ -10,8 +10,14 @@ class HomeController < ApplicationController
 
   def get_sega_instance
     tree = JSON.parse params[:artifact_tree]
-    
+
     render json: tree.empty? ? {} : Artifact.get_all(tree.first)
+  end
+
+  def get_sega_instance1
+    tree = JSON.parse params[:artifact_tree]
+
+    render json: tree.empty? ? {} : Artifact.get_all1(tree.first)
   end
   
 end

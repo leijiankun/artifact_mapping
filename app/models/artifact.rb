@@ -71,6 +71,27 @@ class Artifact
     results
   end
 
+  def self.get_all1(artifact_tree)
+    return [] unless artifact_tree["mapped"]
+    artifact_table = artifact_tree["table"]
+
+    # find primary key
+    key_node = self.get_key_node artifact_tree
+
+    return [] unless key_node.present?
+    primary_key = key_node["mr"]["column"]
+    artifact_table = key_node["mr"]["table"]
+
+    results = []
+
+    rows = self.get_rows artifact_table 
+    rows.each do |row|
+      results.push self.get_one1 artifact_tree, row[primary_key.upcase]
+    end
+
+    results
+  end
+
   def self.get_one(artifact_tree, key_value)
     key_node = self.get_key_node artifact_tree
     return {} unless key_node.present?
@@ -86,14 +107,14 @@ class Artifact
       "sql"=> self.select_sql(table, key, key_value, 1) 
     }
 
-    result["attributes"].push({key => row[key.upcase], "name" => key_node["name"]})
+    result["attributes"].push({"value" => row[key.upcase], "name" => key_node["name"]})
     
 
     artifact_tree["children"].each do |attribute|
       # attribute
       if attribute["type"] == "other" and attribute["mapped"]
         name = attribute["mr"]["column"]["name"]
-        result["attributes"].push({ name => row[name.upcase], "name" => attribute["name"] })
+        result["attributes"].push({ "value" => row[name.upcase], "name" => attribute["name"] })
       end
 
       # artifact, 1-1 mapping
@@ -112,6 +133,47 @@ class Artifact
           fk_table => self.get_one(attribute, reference_key_value) 
         }
         result["attributes"].push artifact
+      end
+
+    end
+
+    result
+  end
+
+  def self.get_one1(artifact_tree, key_value)
+    key_node = self.get_key_node artifact_tree
+    return {} unless key_node.present?
+
+    key = key_node["mr"]["column"]
+    table = key_node["mr"]["table"]
+
+    row = self.get_row table, key, key_value 
+    return {} unless row.present?
+
+    result = {}
+
+    result[key_node["name"]] = row[key.upcase]
+    
+
+    artifact_tree["children"].each do |attribute|
+      # attribute
+      if attribute["type"] == "other" and attribute["mapped"]
+        name = attribute["mr"]["column"]["name"]
+        result[attribute["name"]] = row[name.upcase]
+      end
+
+      # artifact, 1-1 mapping
+      if attribute["type"] == "artifact" and attribute["mapped"]
+        fk_table = attribute["mr"]["table"]
+        fk_key = attribute["mr"]["fk"]["column"]["reference"].first["column"]
+        reference_table = attribute["mr"]["fk"]["table"]
+        reference_key = attribute["mr"]["fk"]["column"]["name"]
+
+        reference_key_value = row[reference_key.upcase]
+
+        # Recrusively get all artifact attributes
+        result[attribute["name"]] = self.get_one1(attribute, reference_key_value) 
+
       end
 
     end
