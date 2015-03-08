@@ -23,8 +23,16 @@ class Artifact
     results
   end
 
-  def self.get_rows(table_name)
+  def self.get_rows(table_name, params = {})
     sql = "SELECT #{table_name}.* FROM #{table_name}"
+    unless params.empty?
+      wheres = []
+      params.each do |k,v|
+        wheres.push("#{k}='#{v}'")
+      end
+      sql = "#{sql} WHERE (#{wheres.join(' AND ')})"
+    end
+
     ActiveRecord::Base.connection.select_all(sql)
   end
 
@@ -50,7 +58,7 @@ class Artifact
     key_node
   end
 
-  def self.get_all(artifact_tree)
+  def self.get_all(artifact_tree, params={})
     return [] unless artifact_tree["mapped"]
     artifact_table = artifact_tree["table"]
 
@@ -63,7 +71,7 @@ class Artifact
 
     results = []
 
-    rows = self.get_rows artifact_table 
+    rows = self.get_rows artifact_table, params
     rows.each do |row|
       results.push self.get_one artifact_tree, row[primary_key.upcase]
     end
@@ -135,6 +143,23 @@ class Artifact
         result["attributes"].push artifact
       end
 
+      # artifacts, 1-n mapping
+      if attribute["type"] == "artifact_n" and attribute["mapped"]
+        fk_table = attribute["mr"]["table"]
+        fk_key = attribute["mr"]["fk"]["column"]["reference"].first["columns"].first
+        reference_table = attribute["mr"]["fk"]["table"]
+        reference_key = attribute["mr"]["fk"]["column"]["name"]
+
+        reference_key_value = row[fk_key.upcase]
+        # Recrusively get all artifact attributes
+        artifact = { 
+          "name" => attribute["name"], 
+          reference_key => reference_key_value, 
+          fk_table => self.get_all(attribute, {reference_key => reference_key_value})
+        }
+        
+        result["attributes"].push artifact
+      end
     end
 
     result
