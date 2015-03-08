@@ -51,7 +51,8 @@
 				"type":"artifact_n",
 				"children": [
 					{
-						"name": "ID"
+						"name": "ID",
+						"type": "key"
 					},
 					{
 						"name": "CODE"
@@ -170,7 +171,8 @@
 			"type" : "artifact_n",
 			"children":[
 				{
-					"name":"ID"
+					"name":"ID",
+					"type":"key"
 				},
 				{
 					"name":"审批表 ID"
