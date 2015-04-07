@@ -25,43 +25,47 @@ var json_path = "<%= asset_path('data.json') %>";
 $(document).ready(function(){
 
 	d3.json(json_path , function(json){
-		
-		treeData = json;
-		height = getTreeHeight(treeData[0]);
-
-		root = treeData[0];
-		root.x0 = height / 2;
-		root.y0 = 0;
-
-		tree = d3.layout.tree()
-			.size([height, width]);
-
-		tree_svg = d3.select("#tree-map").append("svg")
-			.attr("width", width + margin.right + margin.left)
-			.attr("height", getLeaveCount(treeData[0])*30 + margin.top + margin.bottom)
-			.style("display", "inlline-block");
-
-		tree_rootnode = tree_svg
-			.append("g")
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-		visitAll(root, 
-			function(node, options){
-				if(node.type){
-
-				}else {
-					node.type = "other";
-				}
-				node.artifact = options.parent_artifact?options.parent_artifact: null;
-				return node.type&&node.type=="artifact"?{parent_artifact:node}:options;
-			},
-			{parent_artifact:null});
-
-		update(root);
-
-
+		init_tree(json);
 	});
 });
+
+function init_tree(json){
+		
+	treeData = json;
+	height = getTreeHeight(treeData[0]);
+
+	root = treeData[0];
+	root.x0 = height / 2;
+	root.y0 = 0;
+
+	tree = d3.layout.tree()
+		.size([height, width]);
+
+	tree_svg = d3.select("#tree-map").append("svg")
+		.attr("width", width + margin.right + margin.left)
+		.attr("height", getLeaveCount(treeData[0])*30 + margin.top + margin.bottom)
+		.style("display", "inlline-block");
+
+	tree_rootnode = tree_svg
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	visitAll(root, 
+		function(node, options){
+			if(node.type){
+
+			}else {
+				node.type = "other";
+			}
+			node.artifact = options.parent_artifact?options.parent_artifact: null;
+			return node.type&&node.type=="artifact"?{parent_artifact:node}:options;
+		},
+		{parent_artifact:null});
+
+	update(root);
+
+
+}
 
 function update(source) {
 	

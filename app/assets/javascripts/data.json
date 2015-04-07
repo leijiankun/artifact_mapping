@@ -2,7 +2,8 @@
   {
     "name": "公租房审批申请",
     "parent": "null",
-	"type" : "artifact" ,
+	  "type" : "artifact" ,
+    
     "children": [
 		{
 			"name": "ID",
@@ -28,6 +29,7 @@
 				"name":"申请人ID",
 				"type" : "key"
 			},
+			
 			{
 				"name":"申请人CODE"
 			},

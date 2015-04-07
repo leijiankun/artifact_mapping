@@ -158,7 +158,7 @@ $(function(){
         },
         done: function (e, data) {
             console.log(data.result);
-            init_tables(data.result);
+            init_tree(data.result);
         },
         error: function(){
           alert("导入模型失败");

@@ -7,43 +7,43 @@ class HomeController < ApplicationController
   def parse_db_xml
     doc = Nokogiri::XML(params[:xml_file])
 
-    tables = []
-    tables_map = {}
+    entities = []
+    entities_map = {}
     types_map  = {
       "xs:integer" => "int",
       "xs:string"  => "varchar"
     }
 
-
     doc.xpath("/xs:schema/xs:element").each do |t|
-      table = {
-        table: t.attributes["name"].value,
-        table_comment: t.attributes["type"].value,
-        columns: []
+      entity = {
+        name: t.attributes["name"].value,
+        type: "artifact",
+        children: []
       }
 
-      tables_map[table] = table[:table_comment]
+      entities_map[entity[:name]] = entity
 
-      column_tag = doc.xpath("/xs:schema/xs:complexType[@name='#{table[:table]}']").first
+      attribute_tag = doc.xpath("/xs:schema/xs:complexType[@name='#{entity[:name]}']").first
 
-      if column_tag.present?
-        column_tag.xpath(".//xs:sequence/xs:element").each do |column|
-          attrs = column.attributes
+      if attribute_tag.present?
+        attribute_tag.xpath(".//xs:sequence/xs:element").each do |attribute|
+          attrs = attribute.attributes
           type = attrs["type"].value
 
-          column = {
+          attribute = {
             name: attrs["name"].value,
             type: ( types_map.has_key?(type) ? types_map[type] : type )
           }
+          attribute[:key] = true if attribute[:name] == 'ID'
 
-          table[:columns].push column
+          entity[:children].push attribute
         end
       end
 
-      tables.push table 
+      entities.push entity 
     end
 
-    render json: tables 
+    render json: entities 
   end
 
   def parse_sql
