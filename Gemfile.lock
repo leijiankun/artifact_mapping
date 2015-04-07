@@ -271,6 +271,7 @@ DEPENDENCIES
   jquery-ui-rails
   kaminari
   mysql2
+  nokogiri
   pry
   pry-nav
   pry-remote

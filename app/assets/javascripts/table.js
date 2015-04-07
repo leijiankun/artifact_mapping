@@ -127,7 +127,11 @@ $(function(){
     // upload sql file
     $("#upload-sql-file").click(function(){
         $("#filechooser2").click();
-      });
+    });
+
+    $("#upload-xml-file").click(function(){
+        $("#xml-file-chooser").click();
+    });
 
     $('#filechooser2').fileupload({
         url: '/parse_sql',
@@ -143,6 +147,24 @@ $(function(){
         },
         complete: function(){
           $('#upload-sql-file').removeClass("disabled");
+        }
+    }); 
+
+    $('#xml-file-chooser').fileupload({
+        url: '/parse_db_xml',
+        dataType: 'json',
+        start: function(){
+          $('#upload-xml-file').addClass("disabled");
+        },
+        done: function (e, data) {
+            console.log(data.result);
+            init_tables(data.result);
+        },
+        error: function(){
+          alert("导入模型失败");
+        },
+        complete: function(){
+          $('#upload-xml-file').removeClass("disabled");
         }
     }); 
 

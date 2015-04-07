@@ -61,6 +61,8 @@ gem 'rest_client'
 # gem 'mailgun'
 gem 'rails_admin'
 
+gem 'nokogiri'
+
 # gem 'redis-rails'
 # gem 'redis-objects'
 # gem 'weixin_rails_middleware'
