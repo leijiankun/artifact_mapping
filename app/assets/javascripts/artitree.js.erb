@@ -472,3 +472,9 @@ function visitAll(source, action, options) {
 	}
 }
 
+function onLoadTreeJSON(json_path){
+
+	d3.json(json_path , function(json){
+		init_tree(json);
+	});
+}

@@ -43,7 +43,10 @@
                 <span class="caret" style="margin-left:5px;"></span>
               </a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="#">导入Artifact Schema</a></li>
+                <li>
+                  <a href="#">导入Artifact Schema</a>
+                  <input type="file" name="json_file" id="json_filechooser" style="display:none" accept="" onchange="onLoadTreeJSON(this.value);">
+                </li>
                 <li>
                   <a id="upload-sql-file" href="#">导入数据库schema (SQL)</a>
                   <input type="file" name="sql_file" id="filechooser2" style="display:none" accept="">
