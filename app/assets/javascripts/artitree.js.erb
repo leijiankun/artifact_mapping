@@ -23,7 +23,9 @@ var json_path = "<%= asset_path('data.json') %>";
 
 
 $(document).ready(function(){
-
+	$("#load-json-file").click(function(){
+		$("#json_filechooser").click();
+	});
 	d3.json(json_path , function(json){
 		init_tree(json);
 	});
