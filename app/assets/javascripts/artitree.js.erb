@@ -26,6 +26,12 @@ $(document).ready(function(){
 	$("#load-json-file").click(function(){
 		$("#json_filechooser").click();
 	});
+
+	$("#json_filechooser").change(function(){
+		console.log(this.value);
+		onLoadTreeJSON(this.files[0]);
+	});
+
 	d3.json(json_path , function(json){
 		init_tree(json);
 	});
@@ -475,8 +481,20 @@ function visitAll(source, action, options) {
 }
 
 function onLoadTreeJSON(json_path){
+	// generate a new FileReader object
+	var reader = new FileReader();
 
-	d3.json(json_path , function(json){
+	// inject an image with the src url
+	reader.onload = function(event) {
+		
+		json = eval(event.target.result);
+		
+		$("#tree-map").html("");
 		init_tree(json);
-	});
+		
+	}
+
+	// when the file is read it triggers the onload event above.
+	reader.readAsText(json_path);
+	
 }
