@@ -11,7 +11,7 @@ class SqlParser
     self.sql_data_types.each do |type|
       if s.match '^'+type+'$' or s.match '^'+type+'\(' 
         attribute = { type: type }
-        attribute[:size] = s[/\([\w]+\)/].gsub('(','').to_i if s.match '^'+type+'\(' 
+        attribute[:size] = s[/\([\u4e00-\u9fa5\w]+\)/].gsub('(','').to_i if s.match '^'+type+'\(' 
         return attribute
       end
     end
@@ -19,7 +19,7 @@ class SqlParser
   end
 
   def self.parse_table_comments(sql)
-    table_name = sql[/table\s[\w`]+/]
+    table_name = sql[/create\stable\s[\u4e00-\u9fa5\w`]+/]
     return nil unless table_name
     table_name = table_name.split.last.gsub('`','')
     table = { table: table_name, table_comment: table_name }
@@ -36,11 +36,11 @@ class SqlParser
 
   def self.parse_create_table_sql(sql)
     # Parse table name
-    table_name = sql[/table\s[\w`]+/]
+    table_name = sql[/create\stable\s[\u4e00-\u9fa5\w`]+/]
     return nil unless table_name
     table_name = table_name.split.last.gsub('`','')
     table = @tables[table_name]
-
+    #binding.pry
     # table = { table: table_name, table_comment: table_name }
 
     # @tables ||= {}
@@ -48,8 +48,8 @@ class SqlParser
 
 
     # Scan all strings that match a pattern like '(`word`,`word`)'
-    tmps = sql.scan(/\([\w`\s]+,[\w`\s]+\)/)
-    sql = sql.gsub(/\([\w`\s]+,[\w`\s]+\)/, '_..._')
+    tmps = sql.scan(/\([\u4e00-\u9fa5\w`\s]+,[\s]+[\u4e00-\u9fa5\w`\s]+\)/)
+    sql = sql.gsub(/\([\u4e00-\u9fa5\w`\s]+,[\s]+[\u4e00-\u9fa5\w`\s]+\)/, '_..._')
 
     # Parse attributes
     attributes = []
@@ -62,8 +62,8 @@ class SqlParser
     # end
 
     count_tmps = -1
+    #binding.pry
     columns.each do |column|
-      
       column = column.gsub('_..._'){ |t| t = tmps[count_tmps=count_tmps+1]}
 
       arr = column.split
@@ -91,27 +91,33 @@ class SqlParser
       end
 
       # Parse primary keys
-      primary_key = column[/primary\skey\s[\(\w`\)]+/]
+      primary_key = column[/primary\skey\s[\(\u4e00-\u9fa5\w`\)]+/]
       if primary_key
-        primary_key = primary_key[/\([\w`]+\)/].gsub('(','').gsub(')','').gsub('`','')
-        attributes.each do |attribute| 
-          if attribute[:name] == primary_key
-            attribute[:primary_key] = true
-            break
+        primary_key = primary_key[/\([\u4e00-\u9fa5\w`]+\)/].gsub('(','').gsub(')','').gsub('`','').gsub(/\s/, '')
+        primary_keys = primary_key.split(',')
+
+        primary_keys.each do |pk|
+          attributes.each do |attribute| 
+            if attribute[:name] == pk
+              attribute[:pk] = true
+              break
+            end
           end
         end
+
+        binding.pry
       end
 
       # Parse foreign keys
       # SQL example: CONSTRAINT `gsfsqspb_ibfk_2` FOREIGN KEY (`POID`) REFERENCES `ryxx` (`ID`)
       # SQL example2: CONSTRAINT `gsfsqspb_ibfk_2` FOREIGN KEY (`POID`,`TITLE`) REFERENCES `ryxx` (`ID`,`TITLE`)
 
-      foreign_key = column[/foreign\skey\s\([\w`,\s]+\)/]
+      foreign_key = column[/foreign\skey\s\([\u4e00-\u9fa5\w`,\s]+\)/]
       if foreign_key
 
         foreign_key = foreign_key.gsub(/\s/, '')
 
-        foreign_keys = foreign_key[/\([\w`\,]+\)/].gsub('(','').gsub(')','').gsub('`','')
+        foreign_keys = foreign_key[/\([\u4e00-\u9fa5\w`\,]+\)/].gsub('(','').gsub(')','').gsub('`','')
         foreign_keys = foreign_keys.split(',')
 
         foreign_keys.each do |key|
