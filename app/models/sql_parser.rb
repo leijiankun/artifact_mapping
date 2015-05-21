@@ -105,7 +105,6 @@ class SqlParser
           end
         end
 
-        binding.pry
       end
 
       # Parse foreign keys
