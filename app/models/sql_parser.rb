@@ -99,7 +99,7 @@ class SqlParser
         primary_keys.each do |pk|
           attributes.each do |attribute| 
             if attribute[:name] == pk
-              attribute[:pk] = true
+              attribute[:primary_key] = true
               break
             end
           end
