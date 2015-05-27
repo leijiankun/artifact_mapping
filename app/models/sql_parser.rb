@@ -91,9 +91,9 @@ class SqlParser
       end
 
       # Parse primary keys
-      primary_key = column[/primary\skey\s[\(\u4e00-\u9fa5\w`\)]+/]
+      primary_key = column[/primary\skey\s[\(\u4e00-\u9fa5\w`\,\s]+/]
       if primary_key
-        primary_key = primary_key[/\([\u4e00-\u9fa5\w`]+\)/].gsub('(','').gsub(')','').gsub('`','').gsub(/\s/, '')
+        primary_key = primary_key[/\([\u4e00-\u9fa5\w`,\s\)]+/].gsub('(','').gsub(')','').gsub('`','').gsub(/\s/, '')
         primary_keys = primary_key.split(',')
 
         primary_keys.each do |pk|
